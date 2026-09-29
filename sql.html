@@ -3,16 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL | Roadworthy</title>
+  <title>UK Lamborghinis</title>
   <link rel="stylesheet" href="style.css">
   <script src="nav.js" defer></script>
 </head>
 <body>
   <header></header>
   <main>
-    <h1>Query the data</h1>
+    <h1>Have a go yourself! Query a database that contains every 
+      UK-registered Lamborghini between 2005 and 2026</h1>
+
+    <img src="images/lambro.jpg"
+      alt="A Lamborghini."
+      class="hero-img"
+      loading="lazy">
+
     <p>Every UK Lamborghini in the DVSA MOT data. Tables: <code>vehicles</code>,
-       <code>mot_tests</code>, <code>defects</code>. Queries run entirely in your browser.</p>
+       <code>mot_tests</code>, <code>defects</code>. 
+       Queries run entirely in your browser. Let me know if you find anything 
+       interesting shaamiazeem@outlook.com!</p>
 
     <textarea id="sql" rows="8" spellcheck="false">SELECT model, COUNT(*) AS n
 FROM vehicles

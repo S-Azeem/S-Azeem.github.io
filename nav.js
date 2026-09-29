@@ -5,6 +5,6 @@ document.querySelector("header").innerHTML = `
     <a href="clocking.html">Clocking detection</a>
     <a href="marques.html">Marques</a>
     <a href="data.html">Data</a>
-    <a href="sql.html">SQL</a>
+    <a href="sql.html">UK-registered Lamborghini Database</a>
   </nav>
 `;
