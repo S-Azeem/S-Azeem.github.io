@@ -2,4 +2,5 @@
 *.db
 *.sqlite
 *.parquet
+!data/lambos/*.parquet
 data/raw/

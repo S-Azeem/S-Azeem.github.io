@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL | Roadworthy</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="nav.js" defer></script>
+</head>
+<body>
+  <header></header>
+  <main>
+    <h1>Query the data</h1>
+    <p>Every UK Lamborghini in the DVSA MOT data. Tables: <code>vehicles</code>,
+       <code>mot_tests</code>, <code>defects</code>. Queries run entirely in your browser.</p>
+
+    <textarea id="sql" rows="8" spellcheck="false">SELECT model, COUNT(*) AS n
+FROM vehicles
+GROUP BY model
+ORDER BY n DESC
+LIMIT 20;</textarea>
+
+    <p><button id="run" disabled>Loading…</button> <span id="status"></span></p>
+    <div id="results"></div>
+  </main>
+  <footer></footer>
+  <script type="module" src="sql.js"></script>
+</body>
+</html>
