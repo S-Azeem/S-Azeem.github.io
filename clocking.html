@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clocking Detection</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="failure-model.html">Failure model</a>
+      <a href="clocking.html">Clocking detection</a>
+      <a href="marques.html">Marques</a>
+      <a href="data.html">Data</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Odometer Clocking Detection</h1>
+    <p><strong>Status:</strong> planned. Method below; results to follow.</p>
+
+    <section>
+      <h2>The problem</h2>
+      <p>Clocking means winding back a car's odometer to inflate its resale value.
+        Every MOT test records a mileage reading, so each vehicle's test history
+        forms a time series that should only ever go up.</p>
+    </section>
+
+    <section>
+      <h2>Approach</h2>
+      <p>Readings are ordered by test date for each vehicle, then checked against
+        rule-based flags, similar to first-line fraud rules in lending.</p>
+
+      <table>
+        <thead>
+          <tr><th>Flag</th><th>Rule</th><th>Likely cause</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Rollback</td><td>Reading lower than previous test</td><td>Clocking, or keying error</td></tr>
+          <tr><td>Digit error</td><td>Reading roughly 10× the previous</td><td>Extra digit typed</td></tr>
+          <tr><td>Unit switch</td><td>Miles and km mixed across tests</td><td>Data entry</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Why it's harder than it looks</h2>
+      <ul>
+        <li>Not every drop is fraud: replaced instrument clusters and tester typos
+            produce genuine-looking rollbacks.</li>
+        <li>There are no confirmed fraud labels, so the flags can't be scored the
+            way a PD model is scored.</li>
+        <li>Instead, precision will be estimated by manually reviewing a random
+            sample of flagged vehicles.</li>
+      </ul>
+    </section>
+        
+  </main>
+
+  <footer>
+    <p>Data: DVSA MOT History.</p>
+  </footer>
+</body>
+</html>
