@@ -1,37 +1,316 @@
+/* =========================================================
+   Roadworthy site styles (shared by every page)
+   Palette from the MOT world: certificate paper, dark green
+   ink, GOV.UK green for "live", number-plate yellow used once.
+   ========================================================= */
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@500;600;700&display=swap");
+
+:root {
+  --paper:   #EEF2EC;
+  --card:    #F8FAF6;
+  --ink:     #1D2B24;
+  --ink-2:   #4A5A51;
+  --rule:    #C9D3CB;
+  --green:   #00703C;
+  --amber:   #A15C00;
+  --plate:   #F7D117;
+  --uk-blue: #003399;
+
+  --display: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --body:    "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --page:    60rem;
+  --measure: 68ch;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
 body {
-  max-width: 44rem;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.125rem;
   line-height: 1.6;
 }
-nav a { margin-right: 1rem; }
 
+header, main, footer {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+a { color: var(--green); text-underline-offset: 0.2em; }
+a:hover { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--uk-blue); outline-offset: 3px; }
+
+/* ---------- Header and nav (filled in by nav.js) ---------- */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+header .site {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-decoration: none;
+}
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  font-size: 1rem;
+}
+header nav a {
+  color: var(--ink-2);
+  text-decoration: none;
+  padding: 0.15rem 0;
+  border-bottom: 2px solid transparent;
+}
+header nav a:hover { color: var(--ink); border-bottom-color: var(--rule); }
+header nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--green); }
+
+@media (max-width: 40rem) {
+  header nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 0.25rem;
+  }
+  header nav a { white-space: nowrap; }
+}
+
+/* ---------- Type ---------- */
+main { padding-top: 2.5rem; padding-bottom: 3rem; }
+
+h1, h2, h3 { font-family: var(--display); color: var(--ink); }
+h1 {
+  margin: 0 0 1rem;
+  font-weight: 600;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  line-height: 1.05;
+  max-width: 24ch;
+}
+h2 {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+  font-size: 1.875rem;
+  line-height: 1.15;
+  max-width: 32ch;
+}
+h3 { margin: 0; font-weight: 600; font-size: 1.375rem; line-height: 1.2; }
+
+p, ul, ol { max-width: var(--measure); }
+p { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.25rem; margin: 0 0 1rem; }
+li { margin-bottom: 0.5rem; }
+li::marker { color: var(--green); }
+strong { font-weight: 600; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.05em 0.3em;
+}
+
+main > section {
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* ---------- Tables (clocking page, SQL results) ---------- */
 table {
   border-collapse: collapse;
   width: 100%;
   margin: 1rem 0;
+  font-size: 1rem;
+  background: var(--card);
 }
 th, td {
-  border: 1px solid #ccc;
-  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.5rem 0.75rem;
   text-align: left;
+  vertical-align: top;
 }
-th { background: #f3f3f3; }
+th {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.0625rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-bottom: 0;
+}
+tbody tr:nth-child(even) td { background: rgba(0, 112, 60, 0.04); }
 
+/* ---------- SQL console ---------- */
 textarea {
+  display: block;
   width: 100%;
-  box-sizing: border-box;
-  font-family: ui-monospace, monospace;
-  font-size: 0.9rem;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--green);
+  border-radius: 4px;
+  resize: vertical;
 }
-#results { overflow-x: auto; }
+textarea:focus { outline: none; border-color: var(--green); }
+textarea:focus-visible { outline: 3px solid var(--uk-blue); outline-offset: 2px; }
 
+button {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--green);
+  border: 0;
+  border-radius: 4px;
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+}
+button:hover { background: #005a30; }
+button:disabled { background: var(--rule); color: var(--ink-2); cursor: progress; }
+#status { margin-left: 0.75rem; color: var(--ink-2); font-size: 1rem; }
+
+#results { overflow-x: auto; max-height: 70vh; overflow-y: auto; }
+#results table { margin-top: 0.5rem; white-space: nowrap; }
+#results th { position: sticky; top: 0; }
+
+/* ---------- Images and charts ---------- */
 .hero-img {
   display: block;
   width: 100%;
   max-width: 900px;
   height: auto;
-  border-radius: 8px;
-  margin: 1rem 0;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+.chart-wrap {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 1rem;
+}
+.chart-caption { color: var(--ink-2); }
+
+/* ---------- Footer ---------- */
+footer {
+  padding-top: 1.5rem;
+  padding-bottom: 3rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+  font-size: 1rem;
+}
+footer p { margin: 0.25rem 0; }
+footer:empty { display: none; }
+
+/* =========================================================
+   Home page only
+   ========================================================= */
+.hero { padding: 2.5rem 0 1rem; }
+
+.plate {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--plate);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  box-shadow: 0 2px 0 var(--ink);
+  overflow: hidden;
+  max-width: 100%;
+}
+.plate .band {
+  background: var(--uk-blue);
+  color: #fff;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0.55em 0.45em;
+  letter-spacing: 0.04em;
+}
+.plate h1 {
+  margin: 0;
+  max-width: none;
+  padding: 0.05em 0.35em 0;
+  font-weight: 700;
+  font-size: clamp(1.9rem, 7.5vw, 5.75rem);
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  color: #111;
+  white-space: nowrap;
+}
+.hero .strap {
+  margin: 1.75rem 0 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  line-height: 1.2;
+  max-width: 28ch;
+}
+.hero .sub { margin-top: 0.75rem; color: var(--ink-2); }
+
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem 3rem; }
+@media (min-width: 52rem) {
+  .two-col { grid-template-columns: 13rem minmax(0, 1fr); }
+}
+
+/* Project record: styled like an MOT result list. The chip is real info. */
+.record { list-style: none; margin: 0; padding: 0; max-width: none; }
+.record li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  padding: 1.25rem 0;
+  border-bottom: 1px dashed var(--rule);
+}
+.record li:first-child { padding-top: 0; }
+.record li p { grid-column: 1 / -1; margin: 0; color: var(--ink-2); font-size: 1rem; }
+.record h3 a { color: var(--ink); }
+.record h3 a:hover { color: var(--green); }
+
+.status {
+  align-self: start;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 4px;
+  border: 2px solid currentColor;
+  white-space: nowrap;
+}
+.status.live     { color: #fff; background: var(--green); border-color: var(--green); }
+.status.progress { color: var(--amber); }
+.status.planned  { color: var(--ink-2); border-style: dashed; }
+
+@media (max-width: 30rem) {
+  body { font-size: 1.0625rem; }
+  .plate h1 { letter-spacing: 0.03em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
 }

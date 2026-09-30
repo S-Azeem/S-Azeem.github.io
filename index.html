@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roadworthy Vehicle Statistics</title>
+  <title>Roadworthy | UK MOT statistics</title>
+  <meta name="description" content="Statistical analysis of UK DVSA MOT data, treating MOT failure like a probability of default.">
   <link rel="stylesheet" href="style.css">
   <script src="nav.js" defer></script>
 </head>
@@ -13,12 +14,57 @@
   </header>
 
   <main>
-    <h1>Roadworthy</h1>
-    <p>Statistical Analysis of UK DVSA MOT Data</p>
+    <div class="hero">
+      <div class="plate">
+        <span class="band" aria-hidden="true">UK</span>
+        <h1>ROADWORTHY</h1>
+      </div>
+      <p class="strap">Treating MOT failure like a probability of default.</p>
+      <p class="sub">Statistical analysis of UK DVSA MOT data: which cars fail, at what age, and why.</p>
+    </div>
 
-    <h2>About</h2>
-    <p>I'm Shaami, a Statistician with a credit risk and physics background.
-       This project treats MOT failure like a probability of default.</p>
+    <section id="about">
+      <div class="two-col">
+        <h2>About</h2>
+        <div>
+          <p>I'm Shaami, an analytics engineer with a credit risk and physics background.</p>
+          <p>In credit risk, you estimate the chance a borrower defaults as the loan ages. This project applies the same thinking to cars: the MOT test is the default event, and vehicle age plays the role of loan age.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="two-col">
+        <h2>On this site</h2>
+        <ul class="record">
+          <li>
+            <h3><a href="failure-model.html">Failure model</a></h3>
+            <span class="status live">Live</span>
+            <p>At 13 years old, an E46 3 Series fails about 43% of MOTs. An F30 fails about 26%. First chart live; predictive model in progress.</p>
+          </li>
+          <li>
+            <h3><a href="sql.html">Lamborghini database</a></h3>
+            <span class="status live">Live</span>
+            <p>Every UK-registered Lamborghini in the MOT data, queryable with SQL in your browser.</p>
+          </li>
+          <li>
+            <h3><a href="clocking.html">Clocking detection</a></h3>
+            <span class="status planned">Planned</span>
+            <p>Flagging odometer rollbacks in MOT mileage histories, using rules modelled on first-line lending fraud checks.</p>
+          </li>
+          <li>
+            <h3><a href="marques.html">Marques</a></h3>
+            <span class="status planned">Planned</span>
+            <p>Test statistics for specialist makes.</p>
+          </li>
+          <li>
+            <h3><a href="data.html">Data</a></h3>
+            <span class="status planned">Planned</span>
+            <p>The published datasets and how they were built.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
   </main>
 
   <footer>
