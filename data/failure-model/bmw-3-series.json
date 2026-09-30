@@ -1,0 +1,507 @@
+{
+  "meta": {
+    "title": "BMW 3 Series MOT fail rate by age and generation",
+    "built": "2026-09-30",
+    "source": "DVSA MOT history, 1% vehicle sample",
+    "population": "Great Britain tests only (DVSA); vehicles with at least one test in the window",
+    "test_window": [
+      "2018-05-20",
+      "2026-02-04"
+    ],
+    "fail_definition": "Test recorded as failed, including faults rectified during the test (PRS)",
+    "counting": "First test per vehicle per year of age; retests excluded",
+    "age": "Years from first use (registration date if missing), rounded to nearest year",
+    "generations": "Assigned by year of first use; boundaries approximate",
+    "min_tests_per_point": 30,
+    "interval": "95% Wilson score interval",
+    "total_tests": 36818
+  },
+  "series": [
+    {
+      "generation": "E30 and older",
+      "points": [
+        {
+          "age": 30,
+          "tests": 31,
+          "fails": 10,
+          "fail_pct": 32.3,
+          "ci_low": 18.6,
+          "ci_high": 49.9
+        },
+        {
+          "age": 32,
+          "tests": 32,
+          "fails": 6,
+          "fail_pct": 18.8,
+          "ci_low": 8.9,
+          "ci_high": 35.3
+        },
+        {
+          "age": 33,
+          "tests": 34,
+          "fails": 10,
+          "fail_pct": 29.4,
+          "ci_low": 16.8,
+          "ci_high": 46.2
+        },
+        {
+          "age": 34,
+          "tests": 37,
+          "fails": 4,
+          "fail_pct": 10.8,
+          "ci_low": 4.3,
+          "ci_high": 24.7
+        },
+        {
+          "age": 35,
+          "tests": 35,
+          "fails": 10,
+          "fail_pct": 28.6,
+          "ci_low": 16.3,
+          "ci_high": 45.1
+        },
+        {
+          "age": 36,
+          "tests": 30,
+          "fails": 8,
+          "fail_pct": 26.7,
+          "ci_low": 14.2,
+          "ci_high": 44.4
+        }
+      ]
+    },
+    {
+      "generation": "E36",
+      "points": [
+        {
+          "age": 21,
+          "tests": 66,
+          "fails": 29,
+          "fail_pct": 43.9,
+          "ci_low": 32.6,
+          "ci_high": 55.9
+        },
+        {
+          "age": 22,
+          "tests": 89,
+          "fails": 39,
+          "fail_pct": 43.8,
+          "ci_low": 34.0,
+          "ci_high": 54.2
+        },
+        {
+          "age": 23,
+          "tests": 91,
+          "fails": 36,
+          "fail_pct": 39.6,
+          "ci_low": 30.1,
+          "ci_high": 49.8
+        },
+        {
+          "age": 24,
+          "tests": 93,
+          "fails": 37,
+          "fail_pct": 39.8,
+          "ci_low": 30.4,
+          "ci_high": 49.9
+        },
+        {
+          "age": 25,
+          "tests": 94,
+          "fails": 37,
+          "fail_pct": 39.4,
+          "ci_low": 30.1,
+          "ci_high": 49.5
+        },
+        {
+          "age": 26,
+          "tests": 91,
+          "fails": 36,
+          "fail_pct": 39.6,
+          "ci_low": 30.1,
+          "ci_high": 49.8
+        },
+        {
+          "age": 27,
+          "tests": 91,
+          "fails": 30,
+          "fail_pct": 33.0,
+          "ci_low": 24.2,
+          "ci_high": 43.1
+        },
+        {
+          "age": 28,
+          "tests": 59,
+          "fails": 20,
+          "fail_pct": 33.9,
+          "ci_low": 23.1,
+          "ci_high": 46.6
+        },
+        {
+          "age": 29,
+          "tests": 46,
+          "fails": 15,
+          "fail_pct": 32.6,
+          "ci_low": 20.9,
+          "ci_high": 47.0
+        },
+        {
+          "age": 30,
+          "tests": 35,
+          "fails": 11,
+          "fail_pct": 31.4,
+          "ci_low": 18.6,
+          "ci_high": 48.0
+        }
+      ]
+    },
+    {
+      "generation": "E46",
+      "points": [
+        {
+          "age": 13,
+          "tests": 196,
+          "fails": 86,
+          "fail_pct": 43.9,
+          "ci_low": 37.1,
+          "ci_high": 50.9
+        },
+        {
+          "age": 14,
+          "tests": 411,
+          "fails": 178,
+          "fail_pct": 43.3,
+          "ci_low": 38.6,
+          "ci_high": 48.1
+        },
+        {
+          "age": 15,
+          "tests": 594,
+          "fails": 243,
+          "fail_pct": 40.9,
+          "ci_low": 37.0,
+          "ci_high": 44.9
+        },
+        {
+          "age": 16,
+          "tests": 748,
+          "fails": 307,
+          "fail_pct": 41.0,
+          "ci_low": 37.6,
+          "ci_high": 44.6
+        },
+        {
+          "age": 17,
+          "tests": 791,
+          "fails": 315,
+          "fail_pct": 39.8,
+          "ci_low": 36.5,
+          "ci_high": 43.3
+        },
+        {
+          "age": 18,
+          "tests": 723,
+          "fails": 286,
+          "fail_pct": 39.6,
+          "ci_low": 36.1,
+          "ci_high": 43.2
+        },
+        {
+          "age": 19,
+          "tests": 672,
+          "fails": 258,
+          "fail_pct": 38.4,
+          "ci_low": 34.8,
+          "ci_high": 42.1
+        },
+        {
+          "age": 20,
+          "tests": 570,
+          "fails": 218,
+          "fail_pct": 38.2,
+          "ci_low": 34.3,
+          "ci_high": 42.3
+        },
+        {
+          "age": 21,
+          "tests": 429,
+          "fails": 182,
+          "fail_pct": 42.4,
+          "ci_low": 37.8,
+          "ci_high": 47.1
+        },
+        {
+          "age": 22,
+          "tests": 292,
+          "fails": 113,
+          "fail_pct": 38.7,
+          "ci_low": 33.3,
+          "ci_high": 44.4
+        },
+        {
+          "age": 23,
+          "tests": 184,
+          "fails": 59,
+          "fail_pct": 32.1,
+          "ci_low": 25.7,
+          "ci_high": 39.1
+        },
+        {
+          "age": 24,
+          "tests": 98,
+          "fails": 34,
+          "fail_pct": 34.7,
+          "ci_low": 26.0,
+          "ci_high": 44.5
+        },
+        {
+          "age": 25,
+          "tests": 51,
+          "fails": 16,
+          "fail_pct": 31.4,
+          "ci_low": 20.3,
+          "ci_high": 45.0
+        }
+      ]
+    },
+    {
+      "generation": "E90",
+      "points": [
+        {
+          "age": 6,
+          "tests": 251,
+          "fails": 64,
+          "fail_pct": 25.5,
+          "ci_low": 20.5,
+          "ci_high": 31.2
+        },
+        {
+          "age": 7,
+          "tests": 556,
+          "fails": 141,
+          "fail_pct": 25.4,
+          "ci_low": 21.9,
+          "ci_high": 29.1
+        },
+        {
+          "age": 8,
+          "tests": 868,
+          "fails": 244,
+          "fail_pct": 28.1,
+          "ci_low": 25.2,
+          "ci_high": 31.2
+        },
+        {
+          "age": 9,
+          "tests": 1131,
+          "fails": 328,
+          "fail_pct": 29.0,
+          "ci_low": 26.4,
+          "ci_high": 31.7
+        },
+        {
+          "age": 10,
+          "tests": 1430,
+          "fails": 424,
+          "fail_pct": 29.7,
+          "ci_low": 27.3,
+          "ci_high": 32.1
+        },
+        {
+          "age": 11,
+          "tests": 1788,
+          "fails": 532,
+          "fail_pct": 29.8,
+          "ci_low": 27.7,
+          "ci_high": 31.9
+        },
+        {
+          "age": 12,
+          "tests": 2069,
+          "fails": 641,
+          "fail_pct": 31.0,
+          "ci_low": 29.0,
+          "ci_high": 33.0
+        },
+        {
+          "age": 13,
+          "tests": 2014,
+          "fails": 628,
+          "fail_pct": 31.2,
+          "ci_low": 29.2,
+          "ci_high": 33.2
+        },
+        {
+          "age": 14,
+          "tests": 1664,
+          "fails": 528,
+          "fail_pct": 31.7,
+          "ci_low": 29.5,
+          "ci_high": 34.0
+        },
+        {
+          "age": 15,
+          "tests": 1338,
+          "fails": 429,
+          "fail_pct": 32.1,
+          "ci_low": 29.6,
+          "ci_high": 34.6
+        },
+        {
+          "age": 16,
+          "tests": 991,
+          "fails": 312,
+          "fail_pct": 31.5,
+          "ci_low": 28.7,
+          "ci_high": 34.4
+        },
+        {
+          "age": 17,
+          "tests": 705,
+          "fails": 214,
+          "fail_pct": 30.4,
+          "ci_low": 27.1,
+          "ci_high": 33.8
+        },
+        {
+          "age": 18,
+          "tests": 408,
+          "fails": 110,
+          "fail_pct": 27.0,
+          "ci_low": 22.9,
+          "ci_high": 31.5
+        },
+        {
+          "age": 19,
+          "tests": 174,
+          "fails": 47,
+          "fail_pct": 27.0,
+          "ci_low": 21.0,
+          "ci_high": 34.1
+        }
+      ]
+    },
+    {
+      "generation": "F30",
+      "points": [
+        {
+          "age": 3,
+          "tests": 1352,
+          "fails": 161,
+          "fail_pct": 11.9,
+          "ci_low": 10.3,
+          "ci_high": 13.7
+        },
+        {
+          "age": 4,
+          "tests": 1604,
+          "fails": 192,
+          "fail_pct": 12.0,
+          "ci_low": 10.5,
+          "ci_high": 13.7
+        },
+        {
+          "age": 5,
+          "tests": 1938,
+          "fails": 271,
+          "fail_pct": 14.0,
+          "ci_low": 12.5,
+          "ci_high": 15.6
+        },
+        {
+          "age": 6,
+          "tests": 2007,
+          "fails": 328,
+          "fail_pct": 16.3,
+          "ci_low": 14.8,
+          "ci_high": 18.0
+        },
+        {
+          "age": 7,
+          "tests": 1803,
+          "fails": 313,
+          "fail_pct": 17.4,
+          "ci_low": 15.7,
+          "ci_high": 19.2
+        },
+        {
+          "age": 8,
+          "tests": 1562,
+          "fails": 310,
+          "fail_pct": 19.8,
+          "ci_low": 17.9,
+          "ci_high": 21.9
+        },
+        {
+          "age": 9,
+          "tests": 1289,
+          "fails": 251,
+          "fail_pct": 19.5,
+          "ci_low": 17.4,
+          "ci_high": 21.7
+        },
+        {
+          "age": 10,
+          "tests": 959,
+          "fails": 220,
+          "fail_pct": 22.9,
+          "ci_low": 20.4,
+          "ci_high": 25.7
+        },
+        {
+          "age": 11,
+          "tests": 674,
+          "fails": 170,
+          "fail_pct": 25.2,
+          "ci_low": 22.1,
+          "ci_high": 28.6
+        },
+        {
+          "age": 12,
+          "tests": 354,
+          "fails": 98,
+          "fail_pct": 27.7,
+          "ci_low": 23.3,
+          "ci_high": 32.6
+        },
+        {
+          "age": 13,
+          "tests": 37,
+          "fails": 9,
+          "fail_pct": 24.3,
+          "ci_low": 13.4,
+          "ci_high": 40.1
+        }
+      ]
+    },
+    {
+      "generation": "G20",
+      "points": [
+        {
+          "age": 3,
+          "tests": 521,
+          "fails": 81,
+          "fail_pct": 15.5,
+          "ci_low": 12.7,
+          "ci_high": 18.9
+        },
+        {
+          "age": 4,
+          "tests": 425,
+          "fails": 52,
+          "fail_pct": 12.2,
+          "ci_low": 9.5,
+          "ci_high": 15.7
+        },
+        {
+          "age": 5,
+          "tests": 193,
+          "fails": 26,
+          "fail_pct": 13.5,
+          "ci_low": 9.4,
+          "ci_high": 19.0
+        }
+      ]
+    }
+  ]
+}
