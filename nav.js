@@ -15,7 +15,12 @@ const links = PAGES.map(([href, label]) =>
 ).join("");
 
 document.querySelector("header").innerHTML = `
-  <a class="site" href="index.html">Roadworthy</a>
+  <div class="brand">
+    <div class="plate" aria-label="Roadworthy">
+      <span class="band" aria-hidden="true">UK</span>
+      <span class="word">ROADWORTHY</span>
+    </div>
+  </div>
   <nav aria-label="Main">${links}</nav>
 `;
 
