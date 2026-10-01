@@ -140,7 +140,7 @@ header nav a[aria-current="page"] {
 }
 
 /* ---------- Type ---------- */
-main { padding-top: 2.5rem; padding-bottom: 3rem; }
+main { padding-top: 1.5rem; padding-bottom: 3rem; }
 
 h1, h2, h3 { font-family: var(--display); color: var(--ink); }
 h1 {
@@ -158,6 +158,20 @@ h2 {
   max-width: 32ch;
 }
 h3 { margin: 0; font-weight: 600; font-size: 1.375rem; line-height: 1.2; }
+
+#about h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+#about h3 + p {
+  margin-top: 0.25rem;
+}
+
+.about-links {
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
 
 p, ul, ol { max-width: var(--measure); }
 p { margin: 0 0 1rem; }
@@ -275,7 +289,7 @@ footer:empty { display: none; }
 /* =========================================================
    Home page only
    ========================================================= */
-.hero { padding: 2.5rem 0 1rem; }
+.hero { padding: 0.6rem 0 0.6rem; }
 
 .plate {
   display: inline-flex;
@@ -320,15 +334,75 @@ footer:empty { display: none; }
   white-space: nowrap;
   transform: none;
 }
-.hero .strap {
-  margin: 1.75rem 0 0;
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
-  line-height: 1.2;
-  max-width: 28ch;
+.hero .strap,
+.hero .sub {
+  margin-bottom: 0;
 }
-.hero .sub { margin-top: 0.75rem; color: var(--ink-2); }
+
+.hero .strap {
+  margin-top: 1rem;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  line-height: 1.05;
+  max-width: 24ch;
+  letter-spacing: 0;
+}
+.hero .sub {
+  margin-top: 0.2rem;
+  color: var(--ink-2);
+  line-height: 1.35;
+}
+
+.about-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+@media (max-width: 40rem) {
+  .about-links {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+.linkedin,
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+.linkedin:hover,
+.linkedin:focus-visible,
+.social-link:hover,
+.social-link:focus-visible {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.linkedin-logo,
+.social-icon {
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+}
+.x-link .social-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+.social-icon {
+  color: currentColor;
+}
 
 .two-col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem 3rem; }
 @media (min-width: 52rem) {
