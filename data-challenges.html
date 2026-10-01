@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data challenges</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="nav.js" defer></script>
+</head>
+<body>
+  <header>
+
+  </header>
+
+  <main>
+    <h1>Data challenges</h1>
+    <p><strong>Source:</strong> DVSA MOT Database. </p>
+
+    <section>
+      <h2>The MOT test reform</h2>
+      <p>In 2018 the MOT test changed to follow the EU Roadworthiness directive
+        (2014/45/EU). This means that the MOT test is now more stringent, and cars
+        are more likely to fail, meaning there'd be a leniency bias in the old MOT tests.
+        The data in the failure prediction model is from 2018 onwards, so it 
+        reflects the new test standards and the target variable is free of bias over the 
+        sample window.
+      <p>
+
+    </section>
+
+    <section>
+      <h2>The problem</h2>
+      <p>Unfortunately there is no standardised format when entering data 
+        into the DVSA MOT Database for an MOT tester. This means that data is often
+        none-uniform across records, some test centres specify engine codes, e.g., 318i and 
+        some are simpley keyed as 3 Series, making aggregations harder and thus a 
+        difficulty in deriving meaningful insight from the masses of data 
+        (a messy time mapping data...).
+      </p>
+      </p>
+        Often MOT testers also fail to verify the units the odometer measures in
+        causing incoherent odometer reading (mileage) lineage, making the clockback detection
+        very messy.
+      
+      </p>
+    </section>
+
+    <section>
+      <h2>DVSA Wishlist</h2>
+      <ul>
+        <li>Unfortunately, there are no identifyers in the data showing which MOT centre the vehicle
+        was tested at, meaning we can't pinpoint which MOT centres struggle to select
+        the correct unit when entering an odometer unit nor can we figure out which MOT
+        centres have suspiciously low failure rates...</li>
+        <li>It would be helpful to have use and history flags. Personal or fleet use and number of keepers. It would be interesting to see if there
+          was a confirmed link in MOT defects as the keeper count increased or even between 
+          varying use cases.</li>
+        <li>It would give a better understanding of vehicle build quality (survival analysis) if 
+          there was a flag indicating why a vehicle had dropped out of the sample. Scrapped, 
+          exported, SORN or just untested. 
+          Right now a car that stops appearing could be any of these, which makes 
+          it hard to model how long cars actually last.</li>
+      </ul>
+    </section>
+        
+  </main>
+
+  <footer>
+    <p>Data: DVSA MOT History.</p>
+  </footer>
+</body>
+</html>

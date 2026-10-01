@@ -3,8 +3,8 @@ const PAGES = [
   ["index.html", "Home"],
   ["failure-model.html", "Failure model"],
   ["clocking.html", "Clocking detection"],
-  ["marques.html", "Marques"],
-  ["data.html", "Data"],
+  //["marques.html", "Marques"],
+  ["data-challenges.html", "Data challenges"],
   ["sql.html", "Lamborghini database"],
 ];
 

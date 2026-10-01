@@ -26,9 +26,12 @@
     <p><strong>Status:</strong> first chart live (BMW 3 Series). Predictive model in progress.</p>
 
     <section>
-      <h2>Each new 3 Series generation fails its MOT less often than the last</h2>
+      <h2>Is old really gold?: Each new 3 Series generation fails its MOT less often than the last</h2>
       <p>
-        MOT fail rate by vehicle age, split by generation. At the same age, each newer
+        We've all heard the saying <i>'they dont make 'em like they used to'</i> but 
+        have you ever questioned the credibility of that proverb?
+
+        A plot of MOT fail rate over vehicle age, split by generation. At the same age, each newer
         generation fails less often: at 13 years old, the E46 fails about 43% of tests,
         the E90 about 31% and the F30 about 26%.
       </p>
@@ -60,15 +63,11 @@
         </li>
         <li>
           <strong>Same age isn't the same year.</strong> An E46 was 13 around 2018; an
-          F30 turns 13 around 2025. Changes in testing, mileage and servicing over time
-          land on the generation comparison, so "newer generations fail less" is
-          measured, but "newer cars are better built" is not proven by this alone.
-        </li>
-        <li>
-          <strong>What counts as a fail.</strong> Faults fixed during the test (PRS)
-          are counted as fails. Dealers can fix things on the spot and standalone test
-          centres can't, so counting them as passes would bias the results by where
-          cars get tested.
+          F30 turns 13 around 2025. UK average annual mileage has been falling for 
+          about two decades, so newer cars are likely to have less wear due to usage, and 
+          hence a lower failure rate. So "newer generations fail less" is
+          measured, but "newer cars are better built" is not strictly proven by this 
+          alone.
         </li>
         <li>
           <strong>Messy model names.</strong> The DVSA data records the 3 Series under
@@ -152,7 +151,7 @@
         ["Source", meta.source],
         ["Population", meta.population],
         ["Tests included", `${meta.test_window[0]} to ${meta.test_window[1]}`],
-        ["Fail", meta.fail_definition],
+        //["Fail", meta.fail_definition],
         ["Counting", meta.counting],
         ["Age", meta.age],
         ["Generations", meta.generations],
