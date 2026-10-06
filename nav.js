@@ -1,6 +1,7 @@
 // Builds the site header on every page. Add a page here and it appears everywhere.
 const PAGES = [
   ["index.html", "Home"],
+  ["check.html", "Check your car"],
   ["failure-model.html", "Failure model"],
   ["clocking.html", "Clocking detection"],
   //["marques.html", "Marques"],
