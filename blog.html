@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Failure Model</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="nav.js" defer></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <style>
+    /* Chart-only styles; everything else comes from style.css */
+    .chart-wrap { width: 100%; max-width: 900px; margin: 1.5rem 0; }
+    #fail-chart { width: 100%; height: 480px; }
+    .chart-caption { font-size: 0.9em; max-width: 70ch; }
+    .chart-error { padding: 1rem; border: 1px solid currentColor; }
+    @media (max-width: 600px) { #fail-chart { height: 380px; } }
+  </style>
+</head>
+<body>
+  <header>
+
+  </header>
+
+  <main>
+    <h1>Is old really gold?</h1>
+
+    <section>
+      <h2>Each new 3 Series generation fails its MOT less often than the last</h2>
+      <p>
+        We've all heard the saying <i>'they dont make 'em like they used to'</i> but 
+        have you ever questioned the credibility of that proverb?
+
+        A plot of MOT fail rate over vehicle age, split by generation. At the same age, each newer
+        generation fails less often: at 13 years old, the E46 fails about 43% of tests,
+        the E90 about 31% and the F30 about 26%.
+      </p>
+
+      <div class="chart-wrap">
+        <div id="fail-chart" role="img"
+             aria-label="Line chart of BMW 3 Series MOT fail rate by age for each generation"></div>
+      </div>
+      <p class="chart-caption" id="chart-caption">Loading data…</p>
+    </section>
+
+    <section>
+      <h2>How to read it</h2>
+      <p>
+        Each point is the share of first MOT tests at that age that ended in a fail.
+        The shaded band is the 95% confidence interval: wide bands mean few tests, so
+        treat those points with caution. Click a generation in the legend to hide or
+        show it. The E30 and older group starts hidden because its samples are small.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why it's harder than it looks</h2>
+      <ul>
+        <li>
+          <strong>Survivorship.</strong> Old cars still being tested are the ones that
+          survived. Neglected cars have already been scrapped, so fail rates at high
+          ages look better than the cars really were.
+        </li>
+        <li>
+          <strong>Same age isn't the same year.</strong> An E46 was 13 around 2018; an
+          F30 turns 13 around 2025. UK average annual mileage has been falling for 
+          about two decades, so newer cars are likely to have less wear due to usage, and 
+          hence a lower failure rate. So "newer generations fail less" is
+          measured, but "newer cars are better built" is not strictly proven by this 
+          alone.
+        </li>
+        <li>
+          <strong>Messy model names.</strong> The DVSA data records the 3 Series under
+          hundreds of different labels, from "3 SERIES" to "320D M SPORT". Every one
+          has to be mapped to the right model before any counting starts.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Method</h2>
+      <ul id="method-list"><li>Loading…</li></ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Data: DVSA MOT History.</p>
+  </footer>
+
+  <script>
+    const DATA_URL = "data/failure-model/bmw-3-series.json";
+
+    // Okabe-Ito palette: distinguishable with colour blindness
+    const COLOURS = {
+      "E30 and older": "#CC79A7",
+      "E36": "#E69F00",
+      "E46": "#D55E00",
+      "E90": "#009E73",
+      "F30": "#0072B2",
+      "G20": "#56B4E9",
+    };
+    const HIDDEN_BY_DEFAULT = ["E30 and older"];
+
+    function hexToRgba(hex, alpha) {
+      const n = parseInt(hex.slice(1), 16);
+      return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+    }
+
+    function buildTraces(series) {
+      const traces = [];
+      for (const s of series) {
+        const gen = s.generation;
+        const colour = COLOURS[gen] || "#888888";
+        const visible = HIDDEN_BY_DEFAULT.includes(gen) ? "legendonly" : true;
+        const ages = s.points.map(p => p.age);
+
+        // Confidence band: upper edge, then lower edge filled up to it
+        traces.push({
+          x: ages, y: s.points.map(p => p.ci_high),
+          mode: "lines", line: { width: 0 },
+          legendgroup: gen, showlegend: false, hoverinfo: "skip", visible,
+        });
+        traces.push({
+          x: ages, y: s.points.map(p => p.ci_low),
+          mode: "lines", line: { width: 0 },
+          fill: "tonexty", fillcolor: hexToRgba(colour, 0.18),
+          legendgroup: gen, showlegend: false, hoverinfo: "skip", visible,
+        });
+
+        // The line itself
+        traces.push({
+          x: ages, y: s.points.map(p => p.fail_pct),
+          name: gen, legendgroup: gen, visible,
+          mode: "lines+markers",
+          line: { color: colour, width: 2.5 },
+          marker: { color: colour, size: 6 },
+          customdata: s.points.map(p => [p.ci_low, p.ci_high, p.tests]),
+          hovertemplate:
+            `<b>${gen}</b>, age %{x}<br>` +
+            "Fail rate: %{y:.1f}%<br>" +
+            "95% interval: %{customdata[0]:.1f}–%{customdata[1]:.1f}%<br>" +
+            "Tests: %{customdata[2]:,}<extra></extra>",
+        });
+      }
+      return traces;
+    }
+
+    function renderMethod(meta) {
+      const items = [
+        ["Source", meta.source],
+        ["Population", meta.population],
+        ["Tests included", `${meta.test_window[0]} to ${meta.test_window[1]}`],
+        //["Fail", meta.fail_definition],
+        ["Counting", meta.counting],
+        ["Age", meta.age],
+        ["Generations", meta.generations],
+        ["Minimum sample", `${meta.min_tests_per_point} tests per point`],
+        ["Uncertainty", meta.interval],
+        ["Total tests", meta.total_tests.toLocaleString("en-GB")],
+        ["Last built", meta.built],
+      ];
+      document.getElementById("method-list").innerHTML = items
+        .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
+        .join("");
+    }
+
+    async function main() {
+      const chartEl = document.getElementById("fail-chart");
+      const captionEl = document.getElementById("chart-caption");
+      try {
+        const res = await fetch(DATA_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status} loading ${DATA_URL}`);
+        const data = await res.json();
+
+        // Match the chart's text colour and font to the page
+        const bodyStyle = getComputedStyle(document.body);
+        const textColour = bodyStyle.color;
+        const gridColour = "rgba(128, 128, 128, 0.2)";
+
+        const layout = {
+          font: { family: bodyStyle.fontFamily, color: textColour },
+          paper_bgcolor: "rgba(0,0,0,0)",
+          plot_bgcolor: "rgba(0,0,0,0)",
+          margin: { t: 10, r: 10, b: 50, l: 55 },
+          xaxis: { title: "Vehicle age (years)", gridcolor: gridColour, zeroline: false },
+          yaxis: { title: "Fail rate (%)", range: [0, 50], gridcolor: gridColour, zeroline: false },
+          legend: { title: { text: "Generation" }, orientation: "h", y: -0.2 },
+          hovermode: "closest",
+        };
+
+        Plotly.newPlot(chartEl, buildTraces(data.series), layout, {
+          responsive: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ["lasso2d", "select2d"],
+        });
+
+        const m = data.meta;
+        captionEl.textContent =
+          `First MOT test per car per year of age, GB tests ${m.test_window[0]} to ` +
+          `${m.test_window[1]}, ${m.source}. ` +
+          `Points with fewer than ${m.min_tests_per_point} tests are excluded.`;
+        renderMethod(m);
+      } catch (err) {
+        chartEl.style.height = "auto";
+        chartEl.innerHTML =
+          `<p class="chart-error">The chart data couldn't be loaded (${err.message}). ` +
+          `If you opened this file directly, run a local server instead: ` +
+          `<code>python3 -m http.server</code> in the site folder.</p>`;
+        captionEl.textContent = "";
+        document.getElementById("method-list").innerHTML = "";
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>

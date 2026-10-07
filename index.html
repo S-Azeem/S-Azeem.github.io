@@ -16,14 +16,17 @@
   <main>
     <div class="hero">
       <p class="strap">MOT failure through the lens of a modeller</p>
-      <p class="sub">Statistical analysis of UK DVSA MOT data: which cars fail, at what age, and why.</p>
+      <p class="sub">Statistical analysis of UK DVSA MOT data: which cars fail and why.</p>
     </div>
 
     <section id="about">
       <div class="two-col">
         <h2>About</h2>
         <div>
-          <p>Roadworthy is a data project for exploring how statistical thinking can make vehicle reliability easier to understand. The idea is to turn the MOT dataset into a clearer picture of which cars break down, when they do, and whether the pattern is worth acting on.</p>
+          <p>Roadworthy is a data project to show how statistical thinking 
+            can make vehicle reliability easier to understand. The goal is to 
+            turn MOT data the DVSA has for your vehicle, into a probability of whether 
+            it will fail its next MOT.</p>
 
           <h3>About the author</h3>
           <p>I'm Shaami, a quantitative developer with a credit risk and physics background.</p>
@@ -50,9 +53,24 @@
         <h2>On this site</h2>
         <ul class="record">
           <li>
-            <h3><a href="failure-model.html">Failure model</a></h3>
+            <h3><a href="check.html">Check your car!</a></h3>
             <span class="status live">Live</span>
-            <p>At 13 years old, an E46 3 Series fails about 43% of MOTs. An F30 fails about 26%. First chart live; predictive model in progress.</p>
+            <p>Enter your number plate to see the probability of your car passing its next MOT.</p>
+          </li>
+          <li>
+            <h3><a href="failure-model.html">Failure logistic model</a></h3>
+            <span class="status planned">Live</span>
+            <p>A deep dive into the machine learning!</p>
+          </li>
+          <li>
+            <h3><a href="data-challenges.html">Data challenges</a></h3>
+            <span class="status planned">Live</span>
+            <p>Handling DVSAs tricky data...</p>
+          </li>
+          <li>
+            <h3><a href="clocking.html">Clocking detection</a></h3>
+            <span class="status planned">Planned</span>
+            <p>Flagging odometer rollbacks in MOT mileage histories.</p>
           </li>
           <li>
             <h3><a href="sql.html">Lamborghini database</a></h3>
@@ -60,19 +78,9 @@
             <p>Every UK-registered Lamborghini in the MOT data, queryable with SQL in your browser.</p>
           </li>
           <li>
-            <h3><a href="clocking.html">Clocking detection</a></h3>
-            <span class="status planned">Planned</span>
-            <p>Flagging odometer rollbacks in MOT mileage histories, using rules modelled on first-line lending fraud checks.</p>
-          </li>
-          <li>
-            <h3><a href="marques.html">Marques</a></h3>
-            <span class="status planned">Planned</span>
-            <p>Test statistics for specialist makes.</p>
-          </li>
-          <li>
-            <h3><a href="data.html">Data</a></h3>
-            <span class="status planned">Planned</span>
-            <p>The published datasets and how they were built.</p>
+            <h3><a href="blog.html">Blog</a></h3>
+            <span class="status live">Live</span>
+            <p>Discussing the intersection of data science and vehicle reliability.</p>
           </li>
         </ul>
       </div>
