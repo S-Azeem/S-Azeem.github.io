@@ -3,22 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clocking Detection</title>
+  <title>How the MOT failure model works</title>
   <link rel="stylesheet" href="style.css">
   <script src="nav.js" defer></script>
+  <style>
+    /* Page-only styles; everything else comes from style.css */
+    .lead { font-size: 1.1rem; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+             gap: 0.75rem; margin: 1.25rem 0; }
+    .stat { border: 1px solid #ccc; border-radius: 8px; padding: 0.75rem 1rem; }
+    .stat .num { font-size: 1.6rem; font-weight: 700; display: block; line-height: 1.2; }
+    .stat .what { font-size: 0.9em; opacity: 0.8; }
+    .bandrow { display: grid; grid-template-columns: 7.5rem 1fr 3.5rem; gap: 0.5rem;
+               align-items: center; margin: 0.35rem 0; }
+    .bar { height: 1.1rem; border-radius: 3px; }
+    .b-lower { background: #2e7d32; } .b-typical { background: #9e9e9e; } .b-higher { background: #c62828; }
+    .note { font-size: 0.9em; opacity: 0.8; }
+    .cta { display: inline-block; margin: 0.5rem 0 1rem; padding: 0.5rem 1.1rem; border-radius: 6px;
+           background: #111; color: #fff; text-decoration: none; font-weight: 600; }
+    table.simple { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
+    table.simple th, table.simple td { text-align: left; padding: 0.4rem 0.6rem;
+                                       border-bottom: 1px solid #ddd; vertical-align: top; }
+  </style>
 </head>
 <body>
-  <header>
-
-  </header>
+  <header></header>
 
   <main>
-    <h1>Further information regarding the model pending!</h1>
-    <p><strong>Status:</strong> on its way!</p>
+    <h1>How the MOT failure model works</h1>
+    <p class="lead">
+      Enter a registration on <a href="check.html">Check your car</a> and the site estimates how
+      likely the car is to fail its next MOT. This page explains what that estimate is based on,
+      how it was tested, and where it falls short.
+    </p>
+    <a class="cta" href="check.html">Check your car</a>
+
+    <section>
+      <h2>At a glance</h2>
+      <div class="stats">
+        <div class="stat"><span class="num">8</span><span class="what">facts about each car's age, make and MOT history</span></div>
+        <div class="stat"><span class="num">495,116</span><span class="what">past MOTs it learned from and was tested on</span></div>
+        <div class="stat"><span class="num">0.70</span><span class="what">ranking score on MOTs it had never seen (0.5 is a coin toss)</span></div>
+        <div class="stat"><span class="num">0.5 pts</span><span class="what">gap between its average prediction and the real fail rate</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What it predicts</h2>
+      <p>
+        The chance that a car or light van <strong>fails its next MOT</strong>, using only what is
+        known before that test. A fail includes faults the garage fixes on the spot during the
+        test, since those are still recorded as a fail.
+      </p>
+      <p>
+        You see the result two ways. The headline compares the car with others of the same age:
+        <strong>Lower risk</strong>, <strong>Typical</strong> or <strong>Higher risk</strong>.
+        Underneath is the estimated chance of failing, as a percentage.
+      </p>
+    </section>
+
+    <section>
+      <h2>What it looks at</h2>
+      <p>Eight facts, all taken from the car's public MOT record:</p>
+      <table class="simple">
+        <thead><tr><th>Fact</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>Failed MOTs in the last three years</td><td>The strongest signal: recent trouble tends to continue</td></tr>
+          <tr><td>Failed MOTs in its whole history</td><td>A long-term track record, weighted less than recent fails</td></tr>
+          <tr><td>Mileage at its last MOT</td><td>More miles, more wear</td></tr>
+          <tr><td>Advisories at its last MOT</td><td>Warnings about parts that are wearing out</td></tr>
+          <tr><td>Faults that failed it last time</td><td>A heavy fail suggests a car in worse shape</td></tr>
+          <tr><td>Age at the next MOT</td><td>Cars wear with age</td></tr>
+          <tr><td>Time since its last MOT</td><td>A long gap can mean a car that was off the road</td></tr>
+          <tr><td>Make</td><td>Some makes fail more often than others of the same age and history</td></tr>
+        </tbody>
+      </table>
+      <p class="note">
+        For a car's first MOT there is no history yet, so the estimate rests on its age and make.
+        The model knows this and treats first-time cars as their own group.
+      </p>
+    </section>
+
+    <section>
+      <h2>How it learned</h2>
+      <h3>The data</h3>
+      <p>
+        The model was built from a sample of the DVSA's MOT records: 93,040 cars and vans and
+        495,116 MOTs between May 2018 and February 2026. Motorcycles were left out, as they fail
+        for different reasons.
+      </p>
+      <h3>Learning from the past, tested on the future</h3>
+      <p>
+        The model learned from MOTs up to the end of 2022. It was then tested on 141,791 MOTs from
+        2024 to 2026 that it had never seen, in a single final check made after every design
+        decision. That mirrors how the site is used: a model built on the past, predicting MOTs
+        that haven't happened yet.
+      </p>
+      <h3>Cleaning up the records</h3>
+      <p>
+        Real records are messy. Retests a few days after a fail were counted once, not twice;
+        mileage in kilometres was converted; unreadable odometers were handled separately; and
+        the 2018 change to MOT rules meant only tests under the current rules are predicted.
+      </p>
+    </section>
+
+    <section>
+      <h2>How well it works</h2>
+      <h3>Ranking cars by risk</h3>
+      <p>
+        Pick one car that failed and one that passed: about 70% of the time, the model gave the
+        failing car the higher score. Age alone manages about 65%. That's a real improvement,
+        though not a crystal ball: many fails come from faults that appear suddenly.
+      </p>
+      <h3>Getting the percentages right</h3>
+      <p>
+        On the test MOTs, the model predicted an average fail rate of 28.9%; the real rate was
+        28.4%. Across every range of predictions, it stayed within a few points of reality.
+      </p>
+      <h3>The risk bands</h3>
+      <p>How often cars in each band actually failed, on the test MOTs:</p>
+      <div class="bandrow"><span>Lower risk</span><div class="bar b-lower" style="width: 45%"></div><strong>19.7%</strong></div>
+      <div class="bandrow"><span>Typical</span><div class="bar b-typical" style="width: 71%"></div><strong>30.8%</strong></div>
+      <div class="bandrow"><span>Higher risk</span><div class="bar b-higher" style="width: 100%"></div><strong>43.4%</strong></div>
+      <p>
+        Higher-risk cars failed more than twice as often as lower-risk ones. But note that most
+        higher-risk cars still passed: the band says a car is <em>riskier than others like it</em>,
+        not that it will fail.
+      </p>
+      <h3>Consistent across cars</h3>
+      <p>
+        It was checked separately for every common make, each fuel type, each age group, and for
+        first MOTs against cars with history: 36 groups in all, and it met the standard in every one.
+      </p>
+    </section>
+
+    <section>
+      <h2>What it says about makes</h2>
+      <p>
+        Compared with cars of the same age, mileage and MOT history, some makes fail more often
+        than others. Among the 20 most common makes:
+      </p>
+      <ul>
+        <li><strong>Higher risk:</strong> Renault, Citroën, Peugeot and Vauxhall carry the highest
+            odds of failing.</li>
+        <li><strong>Lower risk:</strong> Audi, Land Rover, BMW and Mercedes-Benz carry the lowest.</li>
+      </ul>
+      <p class="note">
+        This isn't a verdict on how well the cars are built. Owners of premium makes are more
+        likely to have their cars serviced before the MOT, and the MOT doesn't test things like
+        engines or gearboxes, so a car can pass easily and still be unreliable.
+      </p>
+    </section>
+
+    <section>
+      <h2>What it can't do</h2>
+      <ul>
+        <li>Predict sudden faults, like a blown bulb, a damaged tyre or a stone chip.</li>
+        <li>See the car's current mileage: it uses the reading from the last MOT.</li>
+        <li>Spot mileage that's been wound back, if it still looks higher than last time.</li>
+        <li>Judge classic cars well: very old cars tested occasionally don't behave like everyday cars.</li>
+        <li>Replace an inspection. It's an estimate for interest, not advice.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>How it runs on this site</h2>
+      <p>
+        When you enter a registration, the site fetches that car's MOT history live from the
+        DVSA, works out the eight facts using exactly the same rules the model was built with,
+        and returns the result. The live version was checked against the original on 50 real
+        cars and gave identical answers for every one.
+      </p>
+      <p class="note">
+        Registrations are looked up as you check them. Basic technical logs are kept for a few
+        days so faults can be fixed; nothing is used to identify you.
+      </p>
+    </section>
+
+    <section>
+      <h2>Keeping it honest</h2>
+      <p>
+        Cars and MOT results change over time, and fail rates have been falling. As new MOT
+        results are published, the model's past predictions can be checked against what actually
+        happened, and it will be recalibrated or retrained when it drifts.
+      </p>
+    </section>
   </main>
 
-  <footer>
-    <p>Data: DVSA MOT History.</p>
-  </footer>
+  <footer></footer>
 </body>
 </html>
