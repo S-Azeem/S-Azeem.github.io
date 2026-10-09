@@ -52,7 +52,11 @@
       </div>
     </section>
 
-    <section>
+    </section>
+
+
+
+
       <h2>What it predicts</h2>
       <p>
         The chance that a car or light van <strong>fails its next MOT</strong>, using only what is
@@ -65,44 +69,8 @@
         Underneath is the estimated chance of failing, as a percentage.
       </p>
     </section>
-
-      <h3>Each fact on its own</h3>
-      <p>
-        Before building the model, each fact was checked on its own: does the fail rate rise
-        with it? Each panel splits the training cars into groups by one fact and shows how
-        often each group failed its next MOT.
-      </p>
-      <figure>
-        <img src="images/failrate_by_uni_feature.png"
-             alt="Six bar charts of fail rate by group for age, all-time fails, recent fails, mileage, fail items and advisories. Each rises from left to right."
-             loading="lazy">
-        <figcaption>
-          Fail rate by group for each fact, on MOTs from 2018 to 2022. The grey bar is cars with
-          no MOT history yet; the label on each bar is its share of all cars.
-        </figcaption>
-      </figure>
-
-      <figure>
-        <img src="images/volume_by_univariate.png"
-             alt="Histograms of how many cars have each value of the seven facts, with the average and one standard deviation either side shaded."
-             loading="lazy">
-        <figcaption>
-          How many cars have each value. The shaded band is one standard deviation either side of
-          the average: the "typical difference" that the coefficients in the table above are
-          measured in.
-        </figcaption>
-      </figure>
-
-
-
-
-
-
-
-
-
-
-
+    
+      
     <section>
       <h2>What it looks at</h2>
       <p>Eight features, all taken from the car's public MOT record:</p>
@@ -136,6 +104,37 @@
         495,116 MOTs between May 2018 and February 2026. Motorcycles were left out, as they fail
         for different reasons.
       </p>
+
+
+      <h3>Each fact on its own</h3>
+      <p>
+        Before building the model, each fact was checked on its own: does the fail rate rise
+        with it? Each panel splits the training cars into groups by one fact and shows how
+        often each group failed its next MOT.
+      </p>
+      <figure>
+        <img src="images/fail_r_univar.png"
+             alt="Six bar charts of fail rate by group for age, all-time fails, recent fails, mileage, fail items and advisories. Each rises from left to right."
+             loading="lazy">
+        <figcaption>
+          Fail rate by group for each fact, on MOTs from 2018 to 2022. The grey bar is cars with
+          no MOT history yet; the label on each bar is its share of all cars.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img src="images/volume_by_univariate.png"
+             alt="Histograms of how many cars have each value of the seven facts, with the average and one standard deviation either side shaded."
+             loading="lazy">
+        <figcaption>
+          How many cars have each value. The shaded band is one standard deviation either side of
+          the average: the "typical difference" that the coefficients in the table above are
+          measured in.
+        </figcaption>
+      </figure>
+
+
+
       <h3>Learning from the past, tested on the future</h3>
       <p>
         The model learned from MOTs up to the end of 2022. It was then tested on 141,791 MOTs from
@@ -150,6 +149,76 @@
         the 2018 change to MOT rules meant only tests under the current rules are predicted.
       </p>
     </section>
+
+      <h3>How the facts relate to each other</h3>
+      <p>
+        Some facts naturally move together: older cars have usually had more MOTs, so more chances
+        to fail. The grid shows how strongly each pair of facts rises and falls together, from
+        &minus;1 (one always rises as the other falls) through 0 (unrelated) to +1 (they always
+        rise together).
+      </p>
+      <figure>
+        <img src="images/spearman.png"
+             alt="A grid of correlations between the seven numeric facts. The strongest pairs are failed MOTs in the whole history with failed MOTs in the last three years, and with age. Most other pairs are weak."
+             loading="lazy">
+        <figcaption>
+          Spearman correlation between each pair of facts, on training MOTs from 2018 to 2022, for
+          cars with an MOT history. Spearman compares the order of values rather than the values
+          themselves, so a few very high mileages or long gaps don't distort it.
+        </figcaption>
+      </figure>
+
+
+
+
+
+
+      <h3>Checking the facts don't repeat each other</h3>
+      <p>
+        If two facts carry the same information, the model can't tell which one deserves the
+        credit, and its weights become unreliable. The variance inflation factor (VIF) measures
+        how well each fact can be predicted from all the others: 1 means it brings completely
+        new information, and values above 5 are a warning sign.
+      </p>
+      <table class="simple">
+        <thead>
+          <tr><th>Fact</th><th>VIF</th><th>Reading</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Failed MOTs in its whole history</td><td>3.33</td><td>Some overlap, with recent fails and age</td></tr>
+          <tr><td>Failed MOTs in the last three years</td><td>2.54</td><td>Some overlap, with all-time fails</td></tr>
+          <tr><td>Age at the next MOT</td><td>1.87</td><td>Mild overlap</td></tr>
+          <tr><td>Faults that failed it last time</td><td>1.48</td><td>Mostly its own information</td></tr>
+          <tr><td>Mileage at its last MOT</td><td>1.43</td><td>Mostly its own information</td></tr>
+          <tr><td>Advisories at its last MOT</td><td>1.13</td><td>Almost entirely its own information</td></tr>
+          <tr><td>Time since its last MOT</td><td>1.05</td><td>Almost entirely its own information</td></tr>
+        </tbody>
+      </table>
+      <p class="note">
+        All seven are below 5, so every fact earns its place. Make isn't included: it's split into
+        separate yes/no columns, one per make, which VIF can't measure fairly. Calculated on the
+        training MOTs (2018 to 2022), for cars with an MOT history.
+      </p>
+
+
+      <figure>
+        <img src="images/auc.png"
+             alt="Left: overlapping distributions of predicted fail chances for cars that passed and cars that failed, with failing cars shifted higher. Right: ROC curves for the model and for age alone, with the model's curve higher, against a dashed diagonal for a coin toss."
+             loading="lazy">
+        <figcaption>
+          Left: the model's predictions for cars that went on to pass and to fail. Failing cars
+          tend to get higher predictions, but the two groups overlap, which is why no model
+          can sort them perfectly.
+          Right: the ROC curve. Moving a cut-off from high to low, it plots how many failing cars
+          get flagged against how many passing cars are wrongly flagged along the way. The
+          further the curve bows towards the top left, the better; the area under it (AUC) is
+          0.70 for the model and 0.65 for age alone, against 0.5 for a coin toss.
+        </figcaption>
+      </figure>
+
+
+
+
 
     <section>
       <h2>How well it works</h2>
