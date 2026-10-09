@@ -24,6 +24,10 @@
     table.simple { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
     table.simple th, table.simple td { text-align: left; padding: 0.4rem 0.6rem;
                                        border-bottom: 1px solid #ddd; vertical-align: top; }
+
+    figure { margin: 1.25rem 0; }
+    figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; }
+    figcaption { font-size: 0.9em; opacity: 0.8; margin-top: 0.4rem; }
   </style>
 </head>
 <body>
@@ -41,10 +45,10 @@
     <section>
       <h2>At a glance</h2>
       <div class="stats">
-        <div class="stat"><span class="num">8</span><span class="what">predictive features about each car's age, make and MOT history</span></div>
-        <div class="stat"><span class="num">495,116</span><span class="what">total MOT cycles. Trained and tested over a split of 286,489 training, 66,836 validation, & 141,791 test cycles.</span></div>
-        <div class="stat"><span class="num">0.70</span><span class="what">ranking score on MOTs it had never seen (0.5 is a coin toss)</span></div>
-        <div class="stat"><span class="num">0.5 pts</span><span class="what">gap between its average prediction and the real fail rate</span></div>
+        <div class="stat"><span class="num">8</span><span class="what">predictive features regarding each car's age, make and MOT history</span></div>
+        <div class="stat"><span class="num">495,116</span><span class="what">MOT cycles that the model was trained, validated and tested on</span></div>
+        <div class="stat"><span class="num">0.70 AUC</span><span class="what">ranking score on MOTs it had never seen (0.5 is a coin toss)</span></div>
+        <div class="stat"><span class="num">0.5%</span><span class="what">difference between the average prediction rate and the real fail rate</span></div>
       </div>
     </section>
 
@@ -52,36 +56,76 @@
       <h2>What it predicts</h2>
       <p>
         The chance that a car or light van <strong>fails its next MOT</strong>, using only what is
-        known before that test. A fail includes faults the garage fixes on the spot during the
-        test, since those are still recorded as a fail.
+        known before that test.
       </p>
       <p>
-        You see the result two ways. The headline compares the car with others of the same age:
+        You see the result two ways. The headline compares the car with others of the same age, 
+        which places your car in one of three risk bands:
         <strong>Lower risk</strong>, <strong>Typical</strong> or <strong>Higher risk</strong>.
         Underneath is the estimated chance of failing, as a percentage.
       </p>
     </section>
 
+      <h3>Each fact on its own</h3>
+      <p>
+        Before building the model, each fact was checked on its own: does the fail rate rise
+        with it? Each panel splits the training cars into groups by one fact and shows how
+        often each group failed its next MOT.
+      </p>
+      <figure>
+        <img src="images/failrate_by_uni_feature.png"
+             alt="Six bar charts of fail rate by group for age, all-time fails, recent fails, mileage, fail items and advisories. Each rises from left to right."
+             loading="lazy">
+        <figcaption>
+          Fail rate by group for each fact, on MOTs from 2018 to 2022. The grey bar is cars with
+          no MOT history yet; the label on each bar is its share of all cars.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img src="images/volume_by_univariate.png"
+             alt="Histograms of how many cars have each value of the seven facts, with the average and one standard deviation either side shaded."
+             loading="lazy">
+        <figcaption>
+          How many cars have each value. The shaded band is one standard deviation either side of
+          the average: the "typical difference" that the coefficients in the table above are
+          measured in.
+        </figcaption>
+      </figure>
+
+
+
+
+
+
+
+
+
+
+
     <section>
       <h2>What it looks at</h2>
       <p>Eight features, all taken from the car's public MOT record:</p>
       <table class="simple">
-        <thead><tr><th>Fact</th><th>Why it matters</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Fact</th>
+            <th>Why it matters</th>
+            <th>Coefficient<br><span class="note">log-odds, per SD</span></th>
+            <th>Odds ratio<br><span class="note">× odds, per SD</span></th>
+          </tr>
+        </thead>
         <tbody>
-          <tr><td>Failed MOTs in the last three years</td><td>The strongest signal: recent trouble tends to continue</td></tr>
-          <tr><td>Failed MOTs in its whole history</td><td>A long-term track record, weighted less than recent fails</td></tr>
-          <tr><td>Mileage at its last MOT</td><td>More miles, more wear</td></tr>
-          <tr><td>Advisories at its last MOT</td><td>Warnings about parts that are wearing out</td></tr>
-          <tr><td>Faults that failed it last time</td><td>A heavy fail suggests a car in worse shape</td></tr>
-          <tr><td>Age at the next MOT</td><td>Cars wear with age</td></tr>
-          <tr><td>Time since its last MOT</td><td>A long gap can mean a car that was off the road</td></tr>
-          <tr><td>Make</td><td>Some makes fail more often than others of the same age and history</td></tr>
+          <tr><td>Failed MOTs in the last three years</td><td>The strongest signal: recent trouble tends to continue</td><td>+0.235</td><td>× 1.26</td></tr>
+          <tr><td>Mileage at its last MOT</td><td>More miles, more wear</td><td>+0.192</td><td>× 1.21</td></tr>
+          <tr><td>Failed MOTs in its whole history</td><td>A long-term track record, weighted less than recent fails</td><td>+0.146</td><td>× 1.16</td></tr>
+          <tr><td>Advisories at its last MOT</td><td>Warnings about parts that are wearing out</td><td>+0.137</td><td>× 1.15</td></tr>
+          <tr><td>Faults that failed it last time</td><td>A heavy fail suggests a car in worse shape</td><td>+0.100</td><td>× 1.10</td></tr>
+          <tr><td>Age at the next MOT</td><td>Cars wear with age</td><td>+0.096</td><td>× 1.10</td></tr>
+          <tr><td>Time since its last MOT</td><td>A long gap can mean a car that was off the road</td><td>+0.051</td><td>× 1.05</td></tr>
+          <tr><td>Make</td><td>Some makes fail more often than others of the same age and history</td><td>−0.193 (Audi) to +0.438 (Renault)<br><span class="note">per make, vs all other makes</span></td><td>× 0.82 to × 1.55<br><span class="note">per make, vs all other makes</span></td></tr>
         </tbody>
       </table>
-      <p class="note">
-        For a car's first MOT there is no history yet, so the estimate rests on its age and make.
-        The model knows this and treats first-time cars as their own group.
-      </p>
     </section>
 
     <section>
