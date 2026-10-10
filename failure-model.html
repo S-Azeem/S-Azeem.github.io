@@ -199,6 +199,60 @@
         separate yes/no columns, one per make, which VIF can't measure fairly. Calculated on the
         training MOTs (2018 to 2022), for cars with an MOT history.
       </p>
+      
+      <h3>Getting the percentages right</h3>
+      <p>
+        A good ranking isn't enough when the site shows a percentage: if it says 30%, about 30%
+        of such cars should fail. Fail rates have been falling, so a model trained on 2018 to
+        2022 predicts slightly too high for later years. A small correction, fitted on 2023
+        (Platt scaling), brings its predictions back in line.
+      </p>
+      <figure>
+        <img src="images/cali-brate.png"
+             alt="Two calibration charts. Each plots predicted against actual fail rate for ten groups of cars, with a diagonal line for perfect agreement. After correction, the model's line follows the diagonal closely, from about 12% to 60%. The age-only lookup covers a narrower range, and without correction sits below the line."
+             loading="lazy">
+        <figcaption>
+          Predicted against actual fail rate, with cars sorted into ten equal groups by their
+          prediction. Points on the dotted diagonal are exactly right. Left: the 2023 data the
+          correction was fitted on. Right: the test MOTs from 2024 to 2026, which played no part
+          in building or correcting either model.
+        </figcaption>
+      </figure>
+
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>Test MOTs, 2024 to Feb 2026</th>
+            <th>AUC<br><span class="note">ranking, 0.5 to 1</span></th>
+            <th>Average predicted<br><span class="note">%</span></th>
+            <th>Actual<br><span class="note">%</span></th>
+            <th>Average gap<br><span class="note">predicted − actual, points</span></th>
+            <th>Typical group gap<br><span class="note">points, across ten groups</span></th>
+            <th>Predicted range<br><span class="note">%, lowest to highest group</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Model, before correction</td><td>0.699</td><td>31.2</td><td>28.4</td><td>+2.8</td><td>2.8</td><td>13 to 64</td></tr>
+          <tr><td><strong>Model, after correction</strong></td><td><strong>0.699</strong></td><td><strong>28.9</strong></td><td><strong>28.4</strong></td><td><strong>+0.5</strong></td><td><strong>1.4</strong></td><td><strong>12 to 61</strong></td></tr>
+          <tr><td>Age only, before correction</td><td>0.648</td><td>32.9</td><td>28.4</td><td>+4.5</td><td>4.5</td><td>15 to 48</td></tr>
+          <tr><td>Age only, after correction</td><td>0.648</td><td>29.5</td><td>28.4</td><td>+1.1</td><td>1.5</td><td>13 to 44</td></tr>
+        </tbody>
+      </table>
+      <p class="note">
+        The correction never changes the ranking, so each pair shares the same AUC. Once both are
+        corrected, the model and age alone are similarly accurate on average, but the model
+        spreads cars much further apart: its riskiest group averages about 61% against 44% for
+        age alone. That's how it picks out genuinely high-risk cars, and why it ranks them better.
+        The row in bold is the version the site uses.
+      </p>
+
+
+
+
+
+
+
+
 
 
       <figure>
@@ -215,6 +269,41 @@
           0.70 for the model and 0.65 for age alone, against 0.5 for a coin toss.
         </figcaption>
       </figure>
+
+
+
+
+
+
+      <h3>How a car is compared with others its age</h3>
+      <p>
+        The band isn't based on a fixed percentage. Each car's predicted chance of failing is
+        compared with cars of the <strong>same age</strong>: the lowest 40% are Lower risk, the
+        highest 20% are Higher risk, and the rest are Typical. The cut-offs come from a recent
+        year of MOTs (2023), set separately for each year of age.
+      </p>
+      <figure>
+        <img src="images/fail_by_age_bands.png"
+             alt="Left: dots for individual cars, plotted by age and predicted chance of failing, coloured green, grey or red by risk band, with two short black cut-off lines at each age that rise as cars get older. Right: actual fail rate for each band by age, with the red Higher risk line above the grey Typical line, and the grey above the green Lower risk line, at every age."
+             loading="lazy">
+        <figcaption>
+          Left: a sample of test cars by age and predicted chance of failing. The two black lines
+          at each age are that age's cut-offs: below the lower line is Lower risk, above the upper
+          line is Higher risk. The cut-offs rise with age, so the same chance can be Higher risk
+          for a young car and Lower risk for an old one.
+          Right: how often cars in each band actually failed, age by age, on the test MOTs from
+          2024 to 2026. Higher-risk cars fail more than lower-risk cars of the same age, all the
+          way through.
+        </figcaption>
+      </figure>
+      <p class="note">
+        Because the cut-offs were set on 2023 MOTs, the split in later years is close to, but not
+        exactly, 40/40/20: on the test MOTs it was 42% Lower, 39% Typical and 18% Higher, as cars
+        in later years were slightly lower risk overall.
+      </p>
+
+
+
 
 
 
