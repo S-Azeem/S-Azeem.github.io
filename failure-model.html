@@ -14,17 +14,12 @@
     .stat { border: 1px solid #ccc; border-radius: 8px; padding: 0.75rem 1rem; }
     .stat .num { font-size: 1.6rem; font-weight: 700; display: block; line-height: 1.2; }
     .stat .what { font-size: 0.9em; opacity: 0.8; }
-    .bandrow { display: grid; grid-template-columns: 7.5rem 1fr 3.5rem; gap: 0.5rem;
-               align-items: center; margin: 0.35rem 0; }
-    .bar { height: 1.1rem; border-radius: 3px; }
-    .b-lower { background: #2e7d32; } .b-typical { background: #9e9e9e; } .b-higher { background: #c62828; }
     .note { font-size: 0.9em; opacity: 0.8; }
     .cta { display: inline-block; margin: 0.5rem 0 1rem; padding: 0.5rem 1.1rem; border-radius: 6px;
            background: #111; color: #fff; text-decoration: none; font-weight: 600; }
     table.simple { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
     table.simple th, table.simple td { text-align: left; padding: 0.4rem 0.6rem;
                                        border-bottom: 1px solid #ddd; vertical-align: top; }
-
     figure { margin: 1.25rem 0; }
     figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; }
     figcaption { font-size: 0.9em; opacity: 0.8; margin-top: 0.4rem; }
@@ -42,42 +37,41 @@
     </p>
     <a class="cta" href="check.html">Check your car</a>
 
-    <section>
+    <section id="at-a-glance">
       <h2>At a glance</h2>
       <div class="stats">
-        <div class="stat"><span class="num">8</span><span class="what">predictive features regarding each car's age, make and MOT history</span></div>
-        <div class="stat"><span class="num">495,116</span><span class="what">MOT cycles that the model was trained, validated and tested on</span></div>
+        <div class="stat"><span class="num">8</span><span class="what">predictive features about each car's age, make and MOT history</span></div>
+        <div class="stat"><span class="num">495,116</span><span class="what">MOT cycles the model was trained, validated and tested on</span></div>
         <div class="stat"><span class="num">0.70 AUC</span><span class="what">ranking score on MOTs it had never seen (0.5 is a coin toss)</span></div>
-        <div class="stat"><span class="num">0.5%</span><span class="what">difference between the average prediction rate and the real fail rate</span></div>
+        <div class="stat"><span class="num">0.5 pts</span><span class="what">gap between the average predicted fail rate (28.9%) and the real fail rate (28.4%) on those MOTs</span></div>
       </div>
     </section>
 
-    </section>
-
-
-
-
+    <section id="what-it-predicts">
       <h2>What it predicts</h2>
-      <p>
-        The chance that a car or light van <strong>fails its next MOT</strong>, using only what is
-        known before that test.
-      </p>
-      <p>
-        You see the result two ways. The headline compares the car with others of the same age, 
-        which places your car in one of three risk bands:
-        <strong>Lower risk</strong>, <strong>Typical</strong> or <strong>Higher risk</strong>.
-        Underneath is the estimated chance of failing, as a percentage.
-      </p>
+      <ul>
+        <li>
+          <strong>The question:</strong> the chance that a car or light van fails its next MOT,
+          using only what is known before that test.
+        </li>
+        <li>
+          <strong>The headline:</strong> a risk band comparing the car with others of the same
+          age: <strong>Lower risk</strong>, <strong>Typical</strong> or <strong>Higher risk</strong>
+          (see <a href="#risk-bands">how the risk band is set</a>).
+        </li>
+        <li>
+          <strong>The bottom line:</strong> the estimated chance of failing, as a percentage.
+        </li>
+      </ul>
     </section>
-    
-      
-    <section>
+
+    <section id="what-it-looks-at">
       <h2>What it looks at</h2>
       <p>Eight features, all taken from the car's public MOT record:</p>
       <table class="simple">
         <thead>
           <tr>
-            <th>Fact</th>
+            <th>Feature</th>
             <th>Why it matters</th>
             <th>Coefficient<br><span class="note">log-odds, per SD</span></th>
             <th>Odds ratio<br><span class="note">× odds, per SD</span></th>
@@ -88,101 +82,130 @@
           <tr><td>Mileage at its last MOT</td><td>More miles, more wear</td><td>+0.192</td><td>× 1.21</td></tr>
           <tr><td>Failed MOTs in its whole history</td><td>A long-term track record, weighted less than recent fails</td><td>+0.146</td><td>× 1.16</td></tr>
           <tr><td>Advisories at its last MOT</td><td>Warnings about parts that are wearing out</td><td>+0.137</td><td>× 1.15</td></tr>
-          <tr><td>Faults that failed it last time</td><td>A heavy fail suggests a car in worse shape</td><td>+0.100</td><td>× 1.10</td></tr>
+          <tr><td>Faults that failed it last time</td><td>A heavy fail suggests a car in worse shape</td><td>+0.100</td><td>× 1.11</td></tr>
           <tr><td>Age at the next MOT</td><td>Cars wear with age</td><td>+0.096</td><td>× 1.10</td></tr>
           <tr><td>Time since its last MOT</td><td>A long gap can mean a car that was off the road</td><td>+0.051</td><td>× 1.05</td></tr>
           <tr><td>Make</td><td>Some makes fail more often than others of the same age and history</td><td>−0.193 (Audi) to +0.438 (Renault)<br><span class="note">per make, vs all other makes</span></td><td>× 0.82 to × 1.55<br><span class="note">per make, vs all other makes</span></td></tr>
         </tbody>
       </table>
+      <p class="note">
+        "Per SD" means per standard deviation: a typical difference between two cars on that feature.
+        For example, a car one standard deviation above average on recent fails has about 1.26
+        times the odds of failing, all else being equal. Make is a yes/no feature, so its figures
+        compare each make with all makes outside the top 20.
+      </p>
     </section>
 
-    <section>
+    <section id="how-it-learned">
       <h2>How it learned</h2>
-      <h3>The data</h3>
+      <h3>The data splits</h3>
       <p>
         The model was built from a sample of the DVSA's MOT records: 93,040 cars and vans and
         495,116 MOTs between May 2018 and February 2026. Motorcycles were left out, as they fail
         for different reasons.
       </p>
+      <p>The data was split by date into three parts:</p>
+      <ul>
+        <li>
+          20/05/2018 to 31/12/2022 for <strong>training</strong>, with 286,489 cycles,
+        </li>
+        <li>
+          01/01/2023 to 31/12/2023 for <strong>validation</strong>, with 66,836 cycles,
+        </li>
+        <li>
+          01/01/2024 to 04/02/2026 for <strong>testing</strong>, with 141,791 cycles.
+        </li>
+      </ul>
 
-
-      <h3>Each fact on its own</h3>
+      <h3>How the eight features were chosen</h3>
       <p>
-        Before building the model, each fact was checked on its own: does the fail rate rise
-        with it? Each panel splits the training cars into groups by one fact and shows how
-        often each group failed its next MOT.
+        The eight features weren't found on the first attempt. They're what survived a round of
+        testing:
+      </p>
+      <ol>
+        <li>
+          <strong>Start with ideas about why cars fail.</strong> Recent fails tend to continue,
+          miles mean wear, advisories warn of trouble ahead, a long gap between MOTs can mean
+          neglect, and some makes fail more than others.
+        </li>
+        <li>
+          <strong>Test them on one model first.</strong> A pilot on the BMW 3 Series tried around
+          30 features, including advisory types such as corrosion, fuel type and the
+          mileage at the test being predicted.
+        </li>
+        <li>
+          <strong>Keep only what earns its place.</strong> Each candidate had to show a signal on
+          its own, add something the others didn't already carry, stay stable over time, and be
+          known before the MOT it predicts. Many fell away: advisory types added nothing beyond
+          the advisory count, fuel type only seemed to matter because petrol cars were older,
+          and the mileage at the test being predicted wasn't known beforehand.
+        </li>
+        <li>
+          <strong>Keep the live version simple.</strong> The final set uses no free text, so the
+          site can rebuild every feature reliably from the DVSA record.
+        </li>
+        <li>
+          <strong>Check, then test once.</strong> The eight were checked for overlap, and every
+          effect pointed the expected way. The model was then tested on later MOTs that played
+          no part in any of these choices.
+        </li>
+      </ol>
+
+      <h3>Each feature on its own</h3>
+      <p>
+        The charts below show each feature on its own, for the final model's data. They're a check
+        that each one carries a signal, not how the features were picked: a feature can look strong
+        alone and add nothing once the others are known, as fuel type did.
       </p>
       <figure>
         <img src="images/fail_r_univar.png"
              alt="Six bar charts of fail rate by group for age, all-time fails, recent fails, mileage, fail items and advisories. Each rises from left to right."
              loading="lazy">
         <figcaption>
-          Fail rate by group for each fact, on MOTs from 2018 to 2022. The grey bar is cars with
-          no MOT history yet; the label on each bar is its share of all cars.
+          Fail rate by group for six of the features, on MOTs from 2018 to 2022. The grey bar is cars
+          with no MOT history yet; the label on each bar is its share of all cars. Time since the
+          last MOT isn't shown here, and make has its own section
+          (<a href="#makes">what it says about makes</a>).
         </figcaption>
       </figure>
-
       <figure>
         <img src="images/volume_by_univariate.png"
-             alt="Histograms of how many cars have each value of the seven facts, with the average and one standard deviation either side shaded."
+             alt="Histograms of how many cars have each value of the seven numeric features, with the average and one standard deviation either side shaded."
              loading="lazy">
         <figcaption>
           How many cars have each value. The shaded band is one standard deviation either side of
-          the average: the "typical difference" that the coefficients in the table above are
-          measured in.
+          the average: the "typical difference" that the coefficients above are measured in.
         </figcaption>
       </figure>
 
-
-
-      <h3>Learning from the past, tested on the future</h3>
+      <h3>How the features relate to each other</h3>
       <p>
-        The model learned from MOTs up to the end of 2022. It was then tested on 141,791 MOTs from
-        2024 to 2026 that it had never seen, in a single final check made after every design
-        decision. That mirrors how the site is used: a model built on the past, predicting MOTs
-        that haven't happened yet.
-      </p>
-      <h3>Cleaning up the records</h3>
-      <p>
-        Real records are messy. Retests a few days after a fail were counted once, not twice;
-        mileage in kilometres was converted; unreadable odometers were handled separately; and
-        the 2018 change to MOT rules meant only tests under the current rules are predicted.
-      </p>
-    </section>
-
-      <h3>How the facts relate to each other</h3>
-      <p>
-        Some facts naturally move together: older cars have usually had more MOTs, so more chances
-        to fail. The grid shows how strongly each pair of facts rises and falls together, from
+        Some features naturally move together: older cars have usually had more MOTs, so more chances
+        to fail. The grid shows how strongly each pair of features rises and falls together, from
         &minus;1 (one always rises as the other falls) through 0 (unrelated) to +1 (they always
         rise together).
       </p>
       <figure>
         <img src="images/spearman.png"
-             alt="A grid of correlations between the seven numeric facts. The strongest pairs are failed MOTs in the whole history with failed MOTs in the last three years, and with age. Most other pairs are weak."
+             alt="A grid of correlations between the seven numeric features. The strongest pairs are failed MOTs in the whole history with failed MOTs in the last three years, and with age. Most other pairs are weak."
              loading="lazy">
         <figcaption>
-          Spearman correlation between each pair of facts, on training MOTs from 2018 to 2022, for
+          Spearman correlation between each pair of features, on training MOTs from 2018 to 2022, for
           cars with an MOT history. Spearman compares the order of values rather than the values
           themselves, so a few very high mileages or long gaps don't distort it.
         </figcaption>
       </figure>
 
-
-
-
-
-
-      <h3>Checking the facts don't repeat each other</h3>
+      <h3>Checking the features don't repeat each other</h3>
       <p>
-        If two facts carry the same information, the model can't tell which one deserves the
+        If two features carry the same information, the model can't tell which one deserves the
         credit, and its weights become unreliable. The variance inflation factor (VIF) measures
-        how well each fact can be predicted from all the others: 1 means it brings completely
+        how well each feature can be predicted from all the others: 1 means it brings completely
         new information, and values above 5 are a warning sign.
       </p>
       <table class="simple">
         <thead>
-          <tr><th>Fact</th><th>VIF</th><th>Reading</th></tr>
+          <tr><th>Feature</th><th>VIF</th><th>Reading</th></tr>
         </thead>
         <tbody>
           <tr><td>Failed MOTs in its whole history</td><td>3.33</td><td>Some overlap, with recent fails and age</td></tr>
@@ -195,27 +218,47 @@
         </tbody>
       </table>
       <p class="note">
-        All seven are below 5, so every fact earns its place. Make isn't included: it's split into
+        All seven are below 5, so every feature earns its place. Make isn't included: it's split into
         separate yes/no columns, one per make, which VIF can't measure fairly. Calculated on the
         training MOTs (2018 to 2022), for cars with an MOT history.
       </p>
-      
+    </section>
 
+    <section id="how-well-it-works">
+      <h2>How well it works</h2>
 
-
-
-
-      <h3>Why the percentages needed correcting</h3>
+      <h3>Ranking cars by risk</h3>
       <p>
-        The MOT fail rate isn't fixed. In this data it fell from over 34% in 2018 to about 28%
-        by 2024, with the steepest drop by 2020 and a slow decline since. A model learns the
-        level of risk from the years it's trained on, so one trained on 2018 to 2022, when the
-        average was 30.8%, expects too many fails in later years. This is known as
-        <strong>drift</strong>.
+        Pick one car that failed and one that passed: about 70% of the time, the model gave the
+        failing car the higher score. Age alone manages about 65%. That's a real improvement,
+        though not a crystal ball: many fails come from faults that appear suddenly.
+      </p>
+      <figure>
+        <img src="images/auc.png"
+             alt="Left: overlapping distributions of predicted fail chances for cars that passed and cars that failed, with failing cars shifted higher. Right: ROC curves for the model and for age alone, with the model's curve higher, against a dashed diagonal for a coin toss."
+             loading="lazy">
+        <figcaption>
+          Left: the model's predictions for cars that went on to pass and to fail. Failing cars
+          tend to get higher predictions, but the two groups overlap, which is why no model
+          can sort them perfectly.
+          Right: the ROC curve. Moving a cut-off from high to low, it plots how many failing cars
+          get flagged against how many passing cars are wrongly flagged along the way. The
+          further the curve bows towards the top left, the better; the area under it is the AUC.
+        </figcaption>
+      </figure>
+
+      <h3>Getting the percentages right</h3>
+      <p>
+        A good ranking isn't enough when the site shows a percentage: if it says 30%, about 30%
+        of such cars should fail. That's harder than it sounds, because the MOT fail rate isn't
+        fixed. In this data it fell from over 34% in 2018 to about 28% by 2024, with the steepest
+        drop by 2020 and a slow decline since. A model learns the level of risk from the years
+        it's trained on, so one trained on 2018 to 2022, when the average was 30.8%, expects too
+        many fails in later years. This is known as <strong>drift</strong>.
       </p>
       <figure>
         <img src="images/model_drift_fr_byyear.png"
-             alt="Line chart of MOT fail rate by year, falling from about 34% in 2018 to about 30% in 2020 and 28% by 2024, then levelling off. Shaded bands mark the training years 2018 to 2022 (average 30.8%), validation year 2023 (28.6%) and test years 2024 to February 2026 (28.4%)."
+             alt="Line chart of MOT fail rate by year, falling from over 34% in 2018 to about 30% in 2020 and 28% by 2024, then levelling off. Shaded bands mark the training years 2018 to 2022 (average 30.8%), validation year 2023 (28.6%) and test years 2024 to February 2026 (28.4%)."
              loading="lazy">
         <figcaption>
           MOT fail rate by year. The model learned from the first band, its correction was fitted
@@ -231,12 +274,6 @@
         almost unchanged). The ranking of cars stays exactly the same; only the percentages move.
       </p>
       <p>
-        <strong>Did it work?</strong> On the test MOTs from 2024 to 2026, which the correction
-        never saw, the uncorrected model predicted an average fail rate of 31.2% against an
-        actual 28.4%, too high by 2.8 points. After correction, it predicted 28.9%, within half a
-        point.
-      </p>
-      <p>
         <strong>Why a correction was enough.</strong> The model's ability to rank cars barely
         changed across the years (a ranking score of 0.70 in both 2023 and 2024 to 2026). What
         changed was the overall level of fails, not which cars fail. That's the kind of drift a
@@ -247,22 +284,14 @@
         Why fail rates fell isn't something this data can say for certain. Possible reasons
         include newer cars making up more of the fleet, garages fixing more faults before the
         test, and changes in testing after the May 2018 rule changes and the 2020 pandemic, when
-        many MOTs were postponed. As new results are published, the correction can be refitted
-        on the latest year.
+        many MOTs were postponed.
       </p>
 
-
-
-
-
-
-
-      <h3>Getting the percentages right</h3>
+      <h3>Did the correction work?</h3>
       <p>
-        A good ranking isn't enough when the site shows a percentage: if it says 30%, about 30%
-        of such cars should fail. Fail rates have been falling, so a model trained on 2018 to
-        2022 predicts slightly too high for later years. A small correction, fitted on 2023
-        (Platt scaling), brings its predictions back in line.
+        On the test MOTs from 2024 to 2026, which the correction never saw, it closed most of the
+        gap between predicted and actual fail rates, and every range of predictions stayed within
+        a few points of reality.
       </p>
       <figure>
         <img src="images/cali-brate.png"
@@ -275,7 +304,6 @@
           in building or correcting either model.
         </figcaption>
       </figure>
-
       <table class="simple">
         <thead>
           <tr>
@@ -302,37 +330,10 @@
         age alone. That's how it picks out genuinely high-risk cars, and why it ranks them better.
         The row in bold is the version the site uses.
       </p>
+    </section>
 
-
-
-
-
-
-
-
-
-
-      <figure>
-        <img src="images/auc.png"
-             alt="Left: overlapping distributions of predicted fail chances for cars that passed and cars that failed, with failing cars shifted higher. Right: ROC curves for the model and for age alone, with the model's curve higher, against a dashed diagonal for a coin toss."
-             loading="lazy">
-        <figcaption>
-          Left: the model's predictions for cars that went on to pass and to fail. Failing cars
-          tend to get higher predictions, but the two groups overlap, which is why no model
-          can sort them perfectly.
-          Right: the ROC curve. Moving a cut-off from high to low, it plots how many failing cars
-          get flagged against how many passing cars are wrongly flagged along the way. The
-          further the curve bows towards the top left, the better; the area under it (AUC) is
-          0.70 for the model and 0.65 for age alone, against 0.5 for a coin toss.
-        </figcaption>
-      </figure>
-
-
-
-
-
-
-      <h3>How a car is compared with others its age</h3>
+    <section id="risk-bands">
+      <h2>How the risk band is set</h2>
       <p>
         The band isn't based on a fixed percentage. Each car's predicted chance of failing is
         compared with cars of the <strong>same age</strong>: the lowest 40% are Lower risk, the
@@ -358,61 +359,17 @@
         exactly, 40/40/20: on the test MOTs it was 42% Lower, 39% Typical and 18% Higher, as cars
         in later years were slightly lower risk overall.
       </p>
-
-
-
-
-
-
-
-
-    <section>
-      <h2>How well it works</h2>
-      <h3>Ranking cars by risk</h3>
-      <p>
-        Pick one car that failed and one that passed: about 70% of the time, the model gave the
-        failing car the higher score. Age alone manages about 65%. That's a real improvement,
-        though not a crystal ball: many fails come from faults that appear suddenly.
-      </p>
-      <h3>Getting the percentages right</h3>
-      <p>
-        On the test MOTs, the model predicted an average fail rate of 28.9%; the real rate was
-        28.4%. Across every range of predictions, it stayed within a few points of reality.
-      </p>
-      <h3>The risk bands</h3>
-      <p>How often cars in each band actually failed, on the test MOTs:</p>
-      <div class="bandrow"><span>Lower risk</span><div class="bar b-lower" style="width: 45%"></div><strong>19.7%</strong></div>
-      <div class="bandrow"><span>Typical</span><div class="bar b-typical" style="width: 71%"></div><strong>30.8%</strong></div>
-      <div class="bandrow"><span>Higher risk</span><div class="bar b-higher" style="width: 100%"></div><strong>43.4%</strong></div>
-      <p>
-        Higher-risk cars failed more than twice as often as lower-risk ones. But note that most
-        higher-risk cars still passed: the band says a car is <em>riskier than others like it</em>,
-        not that it will fail.
-      </p>
-      <h3>Consistent across cars</h3>
-      <p>
-        It was checked separately for every common make, each fuel type, each age group, and for
-        first MOTs against cars with history: 36 groups in all, and it met the standard in every one.
-      </p>
     </section>
 
-    <section>
+    <section id="makes">
       <h2>What it says about makes</h2>
       <p>
-        Compared with cars of the same age, mileage and MOT history, some makes fail more often
-        than others. Among the 20 most common makes:
+        Some makes fail more often than others. But makes also differ in how old and well used
+        their cars are, and age and mileage drive fails too. So each make is compared two ways:
+        <strong>raw</strong> (its cars as they are) and <strong>adjusted</strong> (against
+        cars of the same age, mileage and MOT history).
       </p>
-      <ul>
-        <li><strong>Higher risk:</strong> Renault, Citroën, Peugeot and Vauxhall carry the highest
-            odds of failing.</li>
-        <li><strong>Lower risk:</strong> Audi, Land Rover, BMW and Mercedes-Benz carry the lowest.</li>
-      </ul>
-      <p class="note">
-        This isn't a verdict on how well the cars are built. Owners of premium makes are more
-        likely to have their cars serviced before the MOT, and the MOT doesn't test things like
-        engines or gearboxes, so a car can pass easily and still be unreliable.
-      </p>
-    
+
       <h3>How much data each make has</h3>
       <p>
         The model treats the 20 most common makes individually, and groups every other make
@@ -452,23 +409,10 @@
         estimate a separate effect for each, since many have too few cars to do so reliably.
       </p>
 
-
-
-
-
-
-
-      <section>
-      <h2>What it says about makes</h2>
-      <p>
-        Some makes fail more often than others. But makes also differ in how old and well used
-        their cars are, and age and mileage drive fails too. So each make is compared two ways:
-        <strong>raw</strong> (its cars as they are) and <strong>adjusted</strong> (against
-        cars of the same age, mileage and MOT history).
-      </p>
+      <h3>Raw and adjusted</h3>
       <figure>
         <img src="images/adj_fr_makes.png"
-             alt="Three side-by-side charts for the 20 most common makes and all other makes, sorted from highest to lowest adjusted risk. Left: each make's share of cars and their average age. Middle: odds of failing compared with makes outside the top 20, raw and adjusted, on a log scale. Right: how many percentage points more or less often each make fails than similar cars. Renault, Citroën, Vauxhall and Peugeot are at the top; Land Rover, Audi and BMW at the bottom."
+             alt="Three side-by-side charts for the 20 most common makes and all other makes, sorted from highest to lowest adjusted risk. Left: each make's share of cars and their average age. Middle: odds of failing compared with makes outside the top 20, raw and adjusted, on a log scale. Right: how many percentage points more or less often each make fails than similar cars. Renault, Citroën, Peugeot and Vauxhall are at the top; Land Rover, Audi and BMW at the bottom."
              loading="lazy">
         <figcaption>
           Left: how many cars back each make's figures, and their average age. Middle: the odds of
@@ -519,33 +463,6 @@
         straight comparison mostly measures how old each group's cars are.
       </p>
 
-      <p class="note">
-        The adjusted effect captures everything about a make that the model doesn't measure
-        separately, including how its cars are serviced and who owns them, not just how they're
-        built. Owners of premium makes, for example, are more likely to have their cars serviced
-        before the MOT. And the MOT doesn't test engines or gearboxes, so a make can do well here
-        and still be unreliable.
-      </p>
-    </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       <h3>Why are some makes harder to predict?</h3>
       <p>
         A car's history only helps if its faults give warning first, usually as advisories at the
@@ -564,22 +481,20 @@
           ranks fails within each make. Training MOTs, 2018 to 2022, for cars with an MOT history.
         </figcaption>
       </figure>
-
-      <p><strong>What it shows</strong></p>
       <ul>
         <li>
-          <strong>French makes and Vauxhall fail most often without warning.</strong> About a
-          third of those with no advisories at all at their last MOT failed the next one,
-          against about a quarter for Japanese makes and a fifth for premium makes. Their faults
-          less often show up as advisories first, so a car's history gives less notice, which
-          fits their lower ranking scores.
+          <strong>French makes and Vauxhall fail most often without warning.</strong> About 31%
+          of those with no advisories at all at their last MOT failed the next one, against
+          about a quarter for Japanese makes and a fifth for premium makes. Their faults less
+          often show up as advisories first, so a car's history gives less notice.
         </li>
         <li>
-          <strong>Japanese makes' advisories turn into fails most reliably.</strong> Their fail
-          rate rises the most between no advisories and three or more (about 20 points). One
-          plausible reason is that their typical advisories, such as corrosion, are costly to
-          fix and tend to be left until they fail. The difference from French makes and
-          Vauxhall is small, though, and corrosion hasn't been tested separately.
+          <strong>Japanese makes' advisories turn into fails reliably.</strong> Their fail rate
+          rises by about 20 points between no advisories and three or more. One plausible reason
+          is that their typical advisories, such as corrosion, are costly to fix and tend to be
+          left until they fail. The differences between the groups' rises are small, though, and
+          corrosion hasn't been tested make by make: the pilot that tested advisory types covered
+          the BMW 3 Series only.
         </li>
         <li>
           <strong>Premium makes' advisories matter least.</strong> Their line is the lowest and
@@ -596,15 +511,20 @@
       </ul>
       <p class="note">
         These are raw rates, not adjusted for age or mileage, so part of the difference between
-        groups may come from their cars being older or more heavily used. Possible causes, such
-        as build quality, owners' servicing habits or the type of faults each make develops,
-        can't be separated with MOT data alone.
+        groups may come from their cars being older or more heavily used.
       </p>
 
-    
+      <p class="note">
+        None of this is a verdict on how well the cars are built. The adjusted effect captures
+        everything about a make that the model doesn't measure separately, including how its
+        cars are serviced and who owns them. Owners of premium makes, for example, are more
+        likely to have their cars serviced before the MOT. And the MOT doesn't test engines or
+        gearboxes, so a make can do well here and still be unreliable. Build quality, servicing
+        habits and the type of faults each make develops can't be separated with MOT data alone.
+      </p>
     </section>
 
-    <section>
+    <section id="limits">
       <h2>What it can't do</h2>
       <ul>
         <li>Predict sudden faults, like a blown bulb, a damaged tyre or a stone chip.</li>
@@ -615,11 +535,11 @@
       </ul>
     </section>
 
-    <section>
+    <section id="how-it-runs">
       <h2>How it runs on this site</h2>
       <p>
         When you enter a registration, the site fetches that car's MOT history live from the
-        DVSA, works out the eight facts using exactly the same rules the model was built with,
+        DVSA, works out the eight features using exactly the same rules the model was built with,
         and returns the result. The live version was checked against the original on 50 real
         cars and gave identical answers for every one.
       </p>
@@ -629,12 +549,13 @@
       </p>
     </section>
 
-    <section>
+    <section id="keeping-it-honest">
       <h2>Keeping it honest</h2>
       <p>
         Cars and MOT results change over time, and fail rates have been falling. As new MOT
         results are published, the model's past predictions can be checked against what actually
-        happened, and it will be recalibrated or retrained when it drifts.
+        happened. The correction will be refitted on the latest year when the percentages drift,
+        and the model retrained if its ranking starts to slip.
       </p>
     </section>
   </main>

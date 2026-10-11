@@ -8,61 +8,121 @@
   <script src="nav.js" defer></script>
 </head>
 <body>
-  <header>
-
-  </header>
+  <header></header>
 
   <main>
     <h1>Data challenges</h1>
-    <p><strong>Source:</strong> DVSA MOT Database. </p>
+    <p><strong>Source:</strong> DVSA MOT History data.</p>
 
     <section>
-      <h2>The MOT test reform</h2>
-      <p>In 2018 the MOT test changed to follow the EU Roadworthiness directive
-        (2014/45/EU). This means that the MOT test is now more stringent, and cars
-        are more likely to fail, meaning there'd be a leniency bias in the old MOT tests.
-        The data in the failure prediction model is from 2018 onwards, so it 
-        reflects the new test standards and the target variable is free of bias over the 
-        sample window.
+      <h2>The 2018 MOT reform</h2>
       <p>
-
-    </section>
-
-    <section>
-      <h2>The problem</h2>
-      <p>Unfortunately there is no standardised format when entering data 
-        into the DVSA MOT Database for an MOT tester. This means that data is often
-        none-uniform across records, some test centres specify engine codes, e.g., 318i and 
-        some are simpley keyed as 3 Series, making aggregations harder and thus a 
-        difficulty in deriving meaningful insight from the masses of data 
-        (a messy time mapping data...).
+        On 20 May 2018 the MOT test changed to follow the EU Roadworthiness Directive
+        (2014/45/EU). Defects are now graded as dangerous, major or minor, and some checks,
+        such as diesel emissions, became stricter. Results from before and after the change
+        aren't directly comparable, so a model trained across both would mix two different
+        standards.
       </p>
-      </p>
-        Often MOT testers also fail to verify the units the odometer measures in
-        causing incoherent odometer reading (mileage) lineage, making the clockback detection
-        very messy.
-      
+      <p>
+        To avoid this, the failure model only uses MOTs from 20 May 2018 onwards, so every
+        result in it was judged under the same rules. That removes the reform as a source of
+        bias, but it doesn't make the fail rate stable: it kept falling after 2018 (see below).
       </p>
     </section>
 
     <section>
-      <h2>DVSA Wishlist</h2>
+      <h2>Fail rates move over time</h2>
+      <p>
+        In this data the fail rate fell from over 34% in 2018 to about 28% by 2024. A model
+        trained on earlier years therefore expects too many fails in later ones. This is why the
+        data is split by date rather than at random, with the most recent MOTs held back for
+        testing, and why the model's percentages are corrected using a more recent year. The
+        <a href="how-it-works.html#how-well-it-works">model page</a> covers this in detail.
+      </p>
+      <p>
+        The data can't say for certain why fail rates fell. Newer cars making up more of the
+        fleet, garages fixing faults before the test, and changes in testing practice are all
+        possible reasons, and the MOT records don't hold enough information to separate them.
+      </p>
+    </section>
+
+    <section>
+      <h2>The 2020 pandemic</h2>
+      <p>
+        In spring 2020, MOT due dates for many cars were extended by six months. This shows up
+        in the data as a dip in tests that year and unusually long gaps between MOTs for some
+        cars.
+      </p>
+      <p>
+        That matters for one of the model's features, time since its last MOT. Normally a long gap
+        hints that a car was off the road or neglected, but in 2020 it often just meant the test
+        was postponed. Those postponed tests fall within the training years, so the model learned
+        the effect of a long gap partly from cars that were never neglected, which may be why
+        it's the weakest of the features.
+      </p>
+      <p>
+        The model ranked cars just as well on later years without the extension, which suggests
+        the distortion is small, but it hasn't been tested directly.
+      </p>
+    </section>
+
+    <section>
+      <h2>Inconsistent records</h2>
+      <p>
+        There's no standard format for how MOT testers record vehicle details, so the same car
+        can be described in different ways. Some records give the model variant, such as
+        "318i", while others just say "3 Series". This makes it hard to group cars reliably by
+        model, and mapping the variations takes a lot of manual work. It's one reason the final
+        model uses make rather than model, and uses no free text at all.
+      </p>
+      <p>
+        Testers also don't always check whether the odometer reads in miles or kilometres. A
+        car can appear to jump or drop by thousands of miles between tests, which breaks the
+        mileage history and makes clocking (mileage that's been wound back) very hard to detect
+        reliably.
+      </p>
+    </section>
+
+    <section>
+      <h2>Features that looked useful but weren't</h2>
       <ul>
-        <li>Unfortunately, there are no identifyers in the data showing which MOT centre the vehicle
-        was tested at, meaning we can't pinpoint which MOT centres struggle to select
-        the correct unit when entering an odometer unit nor can we figure out which MOT
-        centres have suspiciously low failure rates...</li>
-        <li>It would be helpful to have use and history flags. Personal or fleet use and number of keepers. It would be interesting to see if there
-          was a confirmed link in MOT defects as the keeper count increased or even between 
-          varying use cases.</li>
-        <li>It would give a better understanding of vehicle build quality (survival analysis) if 
-          there was a flag indicating why a vehicle had dropped out of the sample. Scrapped, 
-          exported, SORN or just untested. 
-          Right now a car that stops appearing could be any of these, which makes 
-          it hard to model how long cars actually last.</li>
+        <li>
+          <strong>Fuel type:</strong> petrol cars seemed to fail more often, but only because
+          they were older on average. Once age was allowed for, fuel type added nothing.
+        </li>
+        <li>
+          <strong>Mileage at the test being predicted:</strong> a strong signal, but it isn't
+          known until the test happens, so using it would leak the future into the prediction.
+          The model uses the mileage at the previous MOT instead.
+        </li>
+        <li>
+          <strong>Advisory types:</strong> categories such as corrosion added nothing beyond the
+          simple count of advisories in the pilot, which covered the BMW 3 Series only.
+        </li>
       </ul>
     </section>
-        
+
+    <section>
+      <h2>DVSA wishlist</h2>
+      <ul>
+        <li>
+          <strong>A test centre identifier.</strong> There's nothing in the data showing where a
+          car was tested, so it isn't possible to see which centres struggle to record odometer
+          units correctly, or which have suspiciously low fail rates.
+        </li>
+        <li>
+          <strong>Use and keeper flags.</strong> Knowing whether a car is in personal or fleet
+          use, and how many keepers it has had, would show whether defects rise with the
+          number of keepers or differ between types of use.
+        </li>
+        <li>
+          <strong>A reason for leaving the data.</strong> A flag for why a car stops appearing,
+          whether scrapped, exported, declared off the road (SORN) or simply untested, would
+          make it possible to study how long cars last (survival analysis). At the moment a car
+          that disappears could be any of these.
+        </li>
+      </ul>
+    </section>
   </main>
 
   <footer>
