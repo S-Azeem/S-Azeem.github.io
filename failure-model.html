@@ -200,6 +200,63 @@
         training MOTs (2018 to 2022), for cars with an MOT history.
       </p>
       
+
+
+
+
+
+      <h3>Why the percentages needed correcting</h3>
+      <p>
+        The MOT fail rate isn't fixed. In this data it fell from over 34% in 2018 to about 28%
+        by 2024, with the steepest drop by 2020 and a slow decline since. A model learns the
+        level of risk from the years it's trained on, so one trained on 2018 to 2022, when the
+        average was 30.8%, expects too many fails in later years. This is known as
+        <strong>drift</strong>.
+      </p>
+      <figure>
+        <img src="images/model_drift_fr_byyear.png"
+             alt="Line chart of MOT fail rate by year, falling from about 34% in 2018 to about 30% in 2020 and 28% by 2024, then levelling off. Shaded bands mark the training years 2018 to 2022 (average 30.8%), validation year 2023 (28.6%) and test years 2024 to February 2026 (28.4%)."
+             loading="lazy">
+        <figcaption>
+          MOT fail rate by year. The model learned from the first band, its correction was fitted
+          on the second, and it was tested on the third. 2018 covers tests from 20 May only, and
+          2026 covers January and February only.
+        </figcaption>
+      </figure>
+      <p>
+        <strong>The fix: a small correction fitted on a more recent year.</strong> Rather than
+        retrain the whole model, its scores are adjusted using the 2023 results, a method
+        called Platt scaling. It learns two numbers: one that shifts every prediction (here, down
+        slightly, to match the lower fail rate) and one that stretches or squeezes them (here,
+        almost unchanged). The ranking of cars stays exactly the same; only the percentages move.
+      </p>
+      <p>
+        <strong>Did it work?</strong> On the test MOTs from 2024 to 2026, which the correction
+        never saw, the uncorrected model predicted an average fail rate of 31.2% against an
+        actual 28.4%, too high by 2.8 points. After correction, it predicted 28.9%, within half a
+        point.
+      </p>
+      <p>
+        <strong>Why a correction was enough.</strong> The model's ability to rank cars barely
+        changed across the years (a ranking score of 0.70 in both 2023 and 2024 to 2026). What
+        changed was the overall level of fails, not which cars fail. That's the kind of drift a
+        simple correction can fix. If the ranking itself started to slip, the model would need
+        retraining instead.
+      </p>
+      <p class="note">
+        Why fail rates fell isn't something this data can say for certain. Possible reasons
+        include newer cars making up more of the fleet, garages fixing more faults before the
+        test, and changes in testing after the May 2018 rule changes and the 2020 pandemic, when
+        many MOTs were postponed. As new results are published, the correction can be refitted
+        on the latest year.
+      </p>
+
+
+
+
+
+
+
       <h3>Getting the percentages right</h3>
       <p>
         A good ranking isn't enough when the site shows a percentage: if it says 30%, about 30%
@@ -355,6 +412,196 @@
         likely to have their cars serviced before the MOT, and the MOT doesn't test things like
         engines or gearboxes, so a car can pass easily and still be unreliable.
       </p>
+    
+      <h3>How much data each make has</h3>
+      <p>
+        The model treats the 20 most common makes individually, and groups every other make
+        together as a single reference group that the 20 are compared against. Each make's
+        figures are only as reliable as the number of cars behind them.
+      </p>
+      <figure>
+        <img src="images/volume-by-make.png"
+             alt="Horizontal bar chart of training MOTs by make. Ford has the most, at 14.6%, followed by Vauxhall at 10.3% and Volkswagen at 9.4%. All other makes together, the reference group, make up 9.3%. The smallest of the 20 named makes are Mazda at 1.6% and Volvo at 1.5%."
+             loading="lazy">
+        <figcaption>
+          Share of training MOTs (2018 to 2022) for the 20 most common makes, with all other makes
+          combined into the reference group (grey). Labels show each make's share of all
+          training MOTs.
+        </figcaption>
+      </figure>
+      <ul>
+        <li>
+          <strong>Three makes make up a third of the data.</strong> Ford (14.6%), Vauxhall
+          (10.3%) and Volkswagen (9.4%) together account for over a third of all training MOTs,
+          so their figures are the most precise.
+        </li>
+        <li>
+          <strong>Even the smallest named makes have thousands of MOTs.</strong> Mazda (1.6%)
+          and Volvo (1.5%) each still have over 4,000, enough for a reliable estimate, though
+          less precise than Ford's.
+        </li>
+        <li>
+          <strong>The reference group is large enough to compare against.</strong> All other
+          makes together account for 9.3% of MOTs, about the size of Volkswagen, so every make's
+          comparison rests on a solid baseline.
+        </li>
+      </ul>
+      <p class="note">
+        Makes outside the top 20 aren't ignored: the model still predicts for them, using their
+        age, mileage and MOT history, with the reference group's make effect. It just doesn't
+        estimate a separate effect for each, since many have too few cars to do so reliably.
+      </p>
+
+
+
+
+
+
+
+      <section>
+      <h2>What it says about makes</h2>
+      <p>
+        Some makes fail more often than others. But makes also differ in how old and well used
+        their cars are, and age and mileage drive fails too. So each make is compared two ways:
+        <strong>raw</strong> (its cars as they are) and <strong>adjusted</strong> (against
+        cars of the same age, mileage and MOT history).
+      </p>
+      <figure>
+        <img src="images/adj_fr_makes.png"
+             alt="Three side-by-side charts for the 20 most common makes and all other makes, sorted from highest to lowest adjusted risk. Left: each make's share of cars and their average age. Middle: odds of failing compared with makes outside the top 20, raw and adjusted, on a log scale. Right: how many percentage points more or less often each make fails than similar cars. Renault, Citroën, Vauxhall and Peugeot are at the top; Land Rover, Audi and BMW at the bottom."
+             loading="lazy">
+        <figcaption>
+          Left: how many cars back each make's figures, and their average age. Middle: the odds of
+          failing compared with makes outside the top 20. The blue dot is the raw comparison; the
+          orange diamond is adjusted for age, mileage and MOT history, and is the make's own
+          effect in the model. Right: the same adjusted effect in percentage points, against
+          similar cars. Training MOTs, 2018 to 2022.
+        </figcaption>
+      </figure>
+
+      <h3>The adjusted picture</h3>
+      <ul>
+        <li>
+          <strong>Highest risk:</strong> Renault, Citroën, Peugeot and Vauxhall. Renault's odds
+          of failing are about 1.55 times those of similar cars from other makes, roughly 9
+          percentage points higher.
+        </li>
+        <li>
+          <strong>Lowest risk:</strong> Land Rover, Audi and BMW, with odds about 15 to 18%
+          lower than similar cars, or roughly 3 percentage points. They're too close to rank:
+          Audi's and Land Rover's figures differ by less than the uncertainty in either.
+        </li>
+        <li>
+          <strong>Ford sits almost exactly where its raw figures suggest.</strong> With a seventh
+          of all cars, it's close to the average of the whole fleet, so adjusting changes little.
+        </li>
+      </ul>
+
+      <h3>When the raw view gets it backwards</h3>
+      <p>
+        For some makes, adjusting reverses the verdict, because their cars are unusually young
+        or old:
+      </p>
+      <ul>
+        <li>
+          <strong>Kia and Hyundai look better than average, raw, but are worse adjusted.</strong>
+          They have the youngest cars (about 7.5 years on average), and young cars rarely fail.
+          Compared with cars of the same age, they fail about 3 to 4 points more often.
+        </li>
+        <li>
+          <strong>Honda and Volvo look worse than average, raw, but are better adjusted.</strong>
+          Honda has the oldest cars (over 11 years on average), so a higher raw fail rate is
+          expected. For their age, they do slightly better than similar cars.
+        </li>
+      </ul>
+      <p>
+        It's the same trap as comparing diesel and petrol cars without allowing for age: a
+        straight comparison mostly measures how old each group's cars are.
+      </p>
+
+      <p class="note">
+        The adjusted effect captures everything about a make that the model doesn't measure
+        separately, including how its cars are serviced and who owns them, not just how they're
+        built. Owners of premium makes, for example, are more likely to have their cars serviced
+        before the MOT. And the MOT doesn't test engines or gearboxes, so a make can do well here
+        and still be unreliable.
+      </p>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <h3>Why are some makes harder to predict?</h3>
+      <p>
+        A car's history only helps if its faults give warning first, usually as advisories at the
+        previous MOT. So for three groups of makes, this compares how often cars failed their
+        next MOT depending on how many advisories they had at the last one.
+      </p>
+      <figure>
+        <img src="images/makes_breakdown_bands.png"
+             alt="Left: fail rate at the next MOT against advisories at the last MOT (0, 1 to 2, 3 or more) for three groups of makes. French makes and Vauxhall have the highest fail rates at every level, about 31% even with no advisories, against about 25% for Japanese makes and 20% for premium makes; all three lines rise by 17 to 21 points. Right: how well the advisory count alone ranks fails for each make, ranging from 0.58 for Citroën to 0.61 for Honda, with the groups mixed together."
+             loading="lazy">
+        <figcaption>
+          Left: fail rate at the next MOT by advisories at the last MOT, for Japanese makes
+          (Honda, Mazda, Toyota, Nissan), premium makes (BMW, Land Rover, Mercedes-Benz, Audi)
+          and French makes with Vauxhall (Renault, Citroën, Peugeot, Vauxhall). Bold lines are
+          each group; faint lines are its makes. Right: how well the advisory count on its own
+          ranks fails within each make. Training MOTs, 2018 to 2022, for cars with an MOT history.
+        </figcaption>
+      </figure>
+
+      <p><strong>What it shows</strong></p>
+      <ul>
+        <li>
+          <strong>French makes and Vauxhall fail most often without warning.</strong> About a
+          third of those with no advisories at all at their last MOT failed the next one,
+          against about a quarter for Japanese makes and a fifth for premium makes. Their faults
+          less often show up as advisories first, so a car's history gives less notice, which
+          fits their lower ranking scores.
+        </li>
+        <li>
+          <strong>Japanese makes' advisories turn into fails most reliably.</strong> Their fail
+          rate rises the most between no advisories and three or more (about 20 points). One
+          plausible reason is that their typical advisories, such as corrosion, are costly to
+          fix and tend to be left until they fail. The difference from French makes and
+          Vauxhall is small, though, and corrosion hasn't been tested separately.
+        </li>
+        <li>
+          <strong>Premium makes' advisories matter least.</strong> Their line is the lowest and
+          rises the least (about 17 points), consistent with advisories being dealt with at a
+          service before the next MOT.
+        </li>
+        <li>
+          <strong>Make by make, the differences are small.</strong> On its own, the advisory
+          count ranks fails almost equally well across all twelve makes (0.58 to 0.61), and the
+          groups don't separate cleanly: Mercedes-Benz scores second-highest, while BMW and Audi
+          are near the bottom. The clearest difference between the groups is how often cars fail
+          with no warning, not how predictive their advisories are.
+        </li>
+      </ul>
+      <p class="note">
+        These are raw rates, not adjusted for age or mileage, so part of the difference between
+        groups may come from their cars being older or more heavily used. Possible causes, such
+        as build quality, owners' servicing habits or the type of faults each make develops,
+        can't be separated with MOT data alone.
+      </p>
+
+    
     </section>
 
     <section>
