@@ -11,20 +11,25 @@
   <header></header>
   <main>
     <h1>Have a go yourself! Query a database that contains every 
-      UK-registered Lamborghini that has had an MOT between 2005 and 2026</h1>
+      GB-registered Lamborghini that has had an MOT between 2005 and 2026</h1>
 
     <img src="images/lambro.jpg"
       alt="A Lamborghini."
       class="hero-img"
       loading="lazy">
 
-    <p>Every UK Lamborghini in the DVSA MOT data. Tables: <code>vehicles</code>,
+    <p>Every GB Lamborghini in the DVSA MOT data. Tables: <code>vehicles</code>,
        <code>mot_tests</code>, <code>defects</code>. 
        Queries run entirely in your browser. Let me know if you find anything 
        interesting shaamiazeem@outlook.com!</p>
 
-    <textarea id="sql" rows="8" spellcheck="false">
+    <p class="nb">
+      <strong>N.B.</strong> Nearly a fifth of these vehicles are Lamborghini tractors.
+      Every diesel in the data is one, as Lamborghini has never made a diesel car,
+      and most are recorded with no model name. The default query below separates them out.
+    </p>
 
+    <textarea id="sql" rows="8" spellcheck="false">
 -- Lamborghini model families in the DVSA MOT data
 --
 -- The DVSA records models as free text, so the same car appears under
