@@ -195,7 +195,7 @@ main > section {
   border-top: 1px solid var(--rule);
 }
 
-/* ---------- Tables (clocking page, SQL results) ---------- */
+/* ---------- Tables (SQL results) ---------- */
 table {
   border-collapse: collapse;
   width: 100%;

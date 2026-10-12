@@ -5,7 +5,6 @@ const PAGES = [
   ["check.html", "Check your car"],
   ["failure-model.html", "Failure model"],
   ["data-challenges.html", "Data challenges"],
-  ["clocking.html", "Clocking detection"],
   ["sql.html", "Lamborghini database"],
   ["blog.html", "Blog"]
 ];
