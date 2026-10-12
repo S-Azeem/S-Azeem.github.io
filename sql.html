@@ -11,7 +11,7 @@
   <header></header>
   <main>
     <h1>Have a go yourself! Query a database that contains every 
-      UK-registered Lamborghini between 2005 and 2026</h1>
+      UK-registered Lamborghini that has had an MOT between 2005 and 2026</h1>
 
     <img src="images/lambro.jpg"
       alt="A Lamborghini."
@@ -23,11 +23,73 @@
        Queries run entirely in your browser. Let me know if you find anything 
        interesting shaamiazeem@outlook.com!</p>
 
-    <textarea id="sql" rows="8" spellcheck="false">SELECT model, COUNT(*) AS n
-FROM vehicles
-GROUP BY model
-ORDER BY n DESC
-LIMIT 20;</textarea>
+    <textarea id="sql" rows="8" spellcheck="false">
+
+-- Lamborghini model families in the DVSA MOT data
+--
+-- The DVSA records models as free text, so the same car appears under
+-- many labels and typos ("AVENTADOR SVJ LP 770-4 S-A", "AVENTHADOR", "MUIRA").
+-- This query:
+--   1. Normalises each label (uppercase, trimmed).
+--   2. Maps it to a model family using pattern matching, catching common typos.
+--   3. Separates out Lamborghini tractors: every diesel "Lamborghini" is a
+--      tractor, as the company has never made a diesel car.
+--   4. Keeps records with no model information as "Unknown" and anything
+--      that can't be identified as "Unmapped", so nothing is silently dropped.
+--   5. Estimates each car's year from the earliest of its date columns,
+--      since first_used_date gives the UK first-use date for imported classics.
+--
+-- Returns: vehicles per family, share of the total, and median year.
+
+
+WITH v AS (
+  SELECT *,
+         UPPER(TRIM(COALESCE(model, ''))) AS m,
+         LEAST(
+           TRY_CAST(LEFT(NULLIF(first_used_date, ''), 4) AS INT),
+           TRY_CAST(LEFT(NULLIF(registration_date, ''), 4) AS INT),
+           TRY_CAST(LEFT(NULLIF(manufacture_date, ''), 4) AS INT)
+         ) AS yr
+  FROM vehicles
+),
+mapped AS (
+  SELECT *,
+    CASE
+      -- No Lamborghini car has ever been diesel: these are Lamborghini tractors
+      WHEN fuel_type = 'Diesel'
+        OR regexp_matches(m, '^(SPRINT|STRIKE|CRONO|SPARK|SPIRE|R4\.|GRAND PRIX|DL )') THEN 'Tractor'
+      WHEN regexp_matches(m, 'REPLICA|KIT CAR')            THEN 'Replica / kit car'
+      WHEN m IN ('', 'UNKNOWN', 'NOT STATED')              THEN 'Unknown'
+      WHEN regexp_matches(m, '^(URUS|URIS)')               THEN 'Urus'
+      WHEN regexp_matches(m, 'HURACAN|LP ?610')            THEN 'Huracán'
+      WHEN regexp_matches(m, 'AVENT|EVENADOR|LP ?7[0-9]0') THEN 'Aventador'
+      WHEN regexp_matches(m, 'GALLAR|SUPER ?LEGGERA')      THEN 'Gallardo'
+      WHEN regexp_matches(m, 'MURCI')                      THEN 'Murciélago'
+      WHEN regexp_matches(m, 'REVUELTO')                   THEN 'Revuelto'
+      WHEN regexp_matches(m, 'TEMERARIO')                  THEN 'Temerario'
+      WHEN regexp_matches(m, 'DIABLO')                     THEN 'Diablo'
+      WHEN regexp_matches(m, 'COUNT|CONTACH')              THEN 'Countach'
+      WHEN regexp_matches(m, 'MIURA|MUIRA|MURIA|JOTA|^P400$') THEN 'Miura'
+      WHEN regexp_matches(m, 'ESPA|ESTADA')                THEN 'Espada'
+      WHEN regexp_matches(m, 'ISLERO')                     THEN 'Islero'
+      WHEN regexp_matches(m, 'JARAMA')                     THEN 'Jarama'
+      WHEN regexp_matches(m, 'URR?A?[CG]O|^P[23][05]0$')   THEN 'Urraco'
+      WHEN regexp_matches(m, 'JAL?P')                      THEN 'Jalpa'
+      WHEN regexp_matches(m, 'SILHOU')                     THEN 'Silhouette'
+      WHEN regexp_matches(m, '^(350|400) ?GT|^GT ?350')    THEN '350/400 GT'
+      WHEN regexp_matches(m, '^LM')                        THEN 'LM002'
+      WHEN regexp_matches(m, 'REVENTON|VENENO|CENTENARIO|SIAN|SESTO') THEN 'Limited series'
+      ELSE 'Unmapped'
+    END AS family
+  FROM v
+)
+SELECT family,
+       COUNT(*)                                           AS vehicles,
+       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct,
+       MEDIAN(yr) FILTER (WHERE yr BETWEEN 1960 AND 2026) AS median_year
+FROM mapped
+GROUP BY family
+ORDER BY vehicles DESC;</textarea>
 
     <p><button id="run" disabled>Loading…</button> <span id="status"></span></p>
     <div id="results"></div>
