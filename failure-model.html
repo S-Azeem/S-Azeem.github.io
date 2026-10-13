@@ -463,6 +463,52 @@
         straight comparison mostly measures how old each group's cars are.
       </p>
 
+      <h3>Does it work equally well for every make?</h3>
+      <p>
+        The ranking score (AUC) can also be measured within each make: among, say, Fords alone,
+        how often does a car that fails get a higher prediction than one that passes? This
+        checks that the model isn't just good on average while failing for some makes.
+      </p>
+      <figure>
+        <img src="images/indiv_car_auc.png"
+             alt="Horizontal bar chart of the ranking score (AUC) for each of the 20 most common makes and all other makes, on the test MOTs. Every bar clears the dashed minimum line at 0.58. Honda is highest at about 0.74, followed by Mazda, Mini and Toyota; BMW is lowest at about 0.65, with Land Rover and Vauxhall just above."
+             loading="lazy">
+        <figcaption>
+          Ranking score (AUC) within each make, on the test MOTs from 2024 to 2026. The dashed
+          line is the minimum the model had to reach for every group (0.58); 0.5 would be a coin
+          toss.
+        </figcaption>
+      </figure>
+      <ul>
+        <li>
+          <strong>Every make clears the bar comfortably.</strong> Scores run from about 0.65 to
+          0.74, all within reach of the overall 0.70.
+        </li>
+        <li>
+          <strong>Easiest to rank:</strong> Honda, Mazda, Mini and Toyota.
+        </li>
+        <li>
+          <strong>Hardest to rank:</strong> BMW, Land Rover and Vauxhall, followed by Citroën,
+          Fiat and Renault. Mercedes-Benz and Audi also sit below the overall figure.
+        </li>
+        <li>
+          <strong>Ranking well isn't the same as being low risk.</strong> The hardest makes to
+          rank include some of the lowest-risk makes (BMW, Land Rover) and some of the highest
+          (Vauxhall, Citroën, Renault). A make's risk shifts all its cars up or down together,
+          which doesn't change their order, so it says nothing about how well they can be ranked.
+        </li>
+      </ul>
+      <p class="note">
+        Two cautions when comparing bars: a make whose cars vary widely in age is easier to rank,
+        since age itself separates them, and smaller makes have less precise scores, so
+        differences of 0.01 to 0.02 between neighbouring bars may just be noise.
+      </p>
+      <p>
+        So what makes some makes harder to predict? The next section looks at how often each
+        group's fails are signposted at the previous MOT.
+      </p>
+
+
       <h3>Why are some makes harder to predict?</h3>
       <p>
         A car's history only helps if its faults give warning first, usually as advisories at the
